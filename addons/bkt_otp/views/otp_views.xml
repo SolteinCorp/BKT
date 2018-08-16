@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+      <record id="action_picking_otp_list" model="ir.actions.act_window">
+            <field name="name">Órdenes de transportación</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('is_transportation', '=', True)]</field>
+            <field name="context">{'default_is_transportation': True}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click para crear una nueva Órden de transportación.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_picking_otp" name="Órdenes de transportación" parent="mrp.menu_mrp_manufacturing" action="action_picking_otp_list" sequence="4"/>
+
+
+     <record id="view_otp_order_form" model="ir.ui.view">
+            <field name="name">otp.order.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="is_transportation"/>
+                     </xpath>
+
+                    <xpath expr="//notebook/page[@name='extra']" position="before">
+                        <page string="Transportación" name="transportation" attrs="{'invisible': [('is_transportation', '=', False)]}">
+                            <group>
+                             <field name="transportation_type"/>
+                             <field name="purchase_order_id"  attrs="{'invisible': [('transportation_type', 'in', ['internal'])]}" />
+                             <field name="transportista_id"/>
+                             <field name="sale_order_id"/>
+                            </group>
+                        </page>
+                    </xpath>
+               </data>
+            </field>
+    </record>
+
+</odoo>

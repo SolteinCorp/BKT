@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': 'Sales Ordeder Ext',
+    'name': 'BKT OTP',
     'version': '1.0',
-    'category': 'Sales',
+    'category': 'OTP',
     'sequence': 35,
-    'summary': 'Sales Order Ext',
+    'summary': 'Ordenes de Transportacion',
     'description': """
-Sales Access Rights
+Accounting Access Rights
 ========================
 It gives the Administrator user access to all accounting features such as journal items and the chart of accounts.
 
 It assigns manager and user access rights to the Administrator for the accounting application and only user rights to the Demo user.
 """,
     'website': 'https://www.odoo.com/page/accounting',
-    'depends': ['sale'],
+    'depends': ['stock','mrp','sale'],
     'data': [ 
             'data/ir_sequence_data.xml',
-            'views/sales_ext_views.xml',
+            'views/otp_views.xml',
             ],
     'demo': [],
     'test': [],

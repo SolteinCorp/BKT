@@ -12,6 +12,16 @@ class SaleOrder(models.Model):
     mrp_ids = fields.One2many('mrp.production', 'sale_order_id', string='Producciones')
     mrp_count = fields.Integer(compute='_compute_mrp_number', string='Producciones')
 
+    otp_order_ids = fields.One2many('stock.picking', 'sale_order_id', string='Transportaciones')
+    otp_count = fields.Integer(compute='_compute_otp_number', string='Transportaciones')
+
+
+    @api.multi
+    @api.depends('otp_order_ids')
+    def _compute_otp_number(self):
+        for otp in self:
+            otp.otp_count = len(otp.otp_order_ids)
+
     @api.multi
     @api.depends('project_ids')
     def _compute_project_number(self):

@@ -20,6 +20,17 @@
         <field name="context">{"default_sale_order_id":active_id}</field>
     </record>
 
+
+    <record model="ir.actions.act_window" id="action_otp_list">
+        <field name="name">Transportation list</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sale_order_id','=',active_id)]</field>
+        <field name="context">{"default_sale_order_id":active_id}</field>
+    </record>
+
      <record id="view_sales_order_ext_form" model="ir.ui.view">
             <field name="name">sale.order.ext.form</field>
             <field name="model">sale.order</field>
@@ -38,6 +49,14 @@
                         <field name="mrp_count" widget="statinfo" string="Producciones"/>
                     </button>
                 </xpath>
+
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="%(bkt_sales.action_otp_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
+                        attrs="{'invisible': [('state', 'in', ['draft','sent'])]}">
+                        <field name="otp_count" widget="statinfo" string="Transportaciones"/>
+                    </button>
+                </xpath>
+
                 </data>
             </field>
     </record>
