@@ -3,7 +3,8 @@
 
 from odoo import fields, models, api, _
 
-class  Picking(models.Model):
+
+class Picking(models.Model):
     _inherit = 'stock.picking'
 
     is_transportation = fields.Boolean('Es tranportación', help='Marcar si la orden es de transportación')
@@ -19,11 +20,9 @@ class  Picking(models.Model):
 
     @api.model
     def create(self, vals):
-        id_pikin = super(Picking,self).create(vals)
+        id_pikin = super(Picking, self).create(vals)
         if 'is_transportation':
             name = self.env['ir.sequence'].with_context(force_company=vals['company_id']).next_by_code('otp.order')
 
         self.env['stock.picking'].browse(id_pikin.id).write({'name': name})
         return id_pikin
-
-
