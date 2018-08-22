@@ -15,6 +15,8 @@ class SaleOrder(models.Model):
     otp_order_ids = fields.One2many('stock.picking', 'sale_order_id', string='Transportaciones')
     otp_count = fields.Integer(compute='_compute_otp_number', string='Transportaciones')
 
+    sale_commission_id = fields.Many2one('sale.commission', string='Comisiones de venta', index=True)
+
 
     @api.multi
     @api.depends('otp_order_ids')
