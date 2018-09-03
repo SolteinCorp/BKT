@@ -17,6 +17,7 @@ It assigns manager and user access rights to the Administrator for the accountin
     'depends': ['project'],
     'data': [ 
             'views/project_otp_ext_views.xml',
+            'report/project_report_template.xml',
             ],
     'demo': [],
     'test': [],

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="project_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Proyecto : <span t-field="o.name"/></h2>
+                        <hr/>
+                        <div class="row mt32 mb32">
+                            <div class="col-xs-12">
+                                <span>Responsable: <b t-field="o.user_id.name"/></span>
+                            </div>
+                        </div>
+                        <h3>Tareas </h3>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Tarea</th>
+                                    <th>Asignada a</th>
+                                    <th>Fecha límite</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.task_ids" t-as="line">
+                                    <td><span t-field="line.name"/></td>
+                                    <td>
+                                        <span t-field="line.user_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.date_deadline"/>
+                                    </td>
+                                    <td><span t-field="line.stage_id.name"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <hr/>
+                        <p>Certificado por,<br/>(Fecha y firma).<br/><br/></p>
+                    </div>
+                </t>
+
+                <div style="page-break-after:always;"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+        id="project_report"
+        name="bkt_project.project_report_template"
+        model="project.project"
+        report_type="qweb-pdf"
+        string="Imprimir proyecto"
+        file="bkt_project.project_report_template"
+        menu="True"
+        attachment_use="True"
+        attachment="'Proyecto_'+(object.name or '').replace('/','')+'.pdf'"
+    />
+</odoo>
