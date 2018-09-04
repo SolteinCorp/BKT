@@ -18,6 +18,7 @@ It assigns manager and user access rights to the Administrator for the accountin
     'data': [ 
             'data/ir_sequence_data.xml',
             'views/sales_ext_views.xml',
+            'report/sales_report_template.xml',
             ],
     'demo': [],
     'test': [],
