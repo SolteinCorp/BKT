@@ -23,7 +23,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.task_ids" t-as="line">
+                                <tr t-foreach="o.tasks" t-as="line">
                                     <td><span t-field="line.name"/></td>
                                     <td>
                                         <span t-field="line.user_id.name"/>
@@ -51,7 +51,7 @@
         name="bkt_project.project_report_template"
         model="project.project"
         report_type="qweb-pdf"
-        string="Imprimir proyecto"
+        string="Reporte Orden de instalación"
         file="bkt_project.project_report_template"
         menu="True"
         attachment_use="True"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="sales_report_template">
-        <t t-call="web.html_container">
+        <t t-call="report.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
+                <t t-call="report.external_layout">
                     <div class="page">
                         <h3>Acta de Terminación : <span t-field="o.name"/></h3>
                         <hr/>
@@ -45,9 +45,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <t t-if="page_index &gt; 24">
-                            <p style="page-break-before:always;"> </p>
-                        </t>
+
                         <h3>Entregas </h3>
                         <table class="table table-condensed">
                             <thead>
@@ -65,9 +63,7 @@
                                 </t>
                             </tbody>
                         </table>
-                        <t t-if="page_index &gt; 24" >
-                            <p style="page-break-before:always;"> </p>
-                        </t>
+
                         <h3>Proyectos</h3>
                         <table class="table table-condensed">
                             <thead>
@@ -88,9 +84,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <t t-if="page_index &gt; 24" >
-                            <p style="page-break-before:always;"> </p>
-                        </t>
+
                         <h3>Producciones</h3>
                         <table class="table table-condensed">
                             <thead>
@@ -110,9 +104,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <t t-if="page_index &gt; 24">
-                            <p style="page-break-before:auto;"> </p>
-                        </t>
+
                          <h3>Transportaciones</h3>
                         <table class="table table-condensed">
                             <thead>
@@ -132,9 +124,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <t t-if="page_index &gt; 24" >
-                            <p style="page-break-before:auto;"> </p>
-                        </t>
+
                         <h3>Facturas</h3>
                         <table class="table table-condensed">
                             <thead>
@@ -154,10 +144,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <t t-if="page_index &gt; 24" >
-                            <p style="page-break-before:auto;"> </p>
-                        </t>
-                        <hr/>
+
                         <p>Certificado por,<br/>(Fecha y firma).<br/><br/></p>
                     </div>
                 </t>
