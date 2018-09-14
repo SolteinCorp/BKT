@@ -7,7 +7,8 @@ from odoo import fields, models, api, _
 class Picking(models.Model):
     _inherit = 'stock.picking'
 
-    is_transportation = fields.Boolean('Es tranportación', help='Marcar si la orden es de transportación')
+    is_transportation = fields.Boolean('Es transportación', help='Marcar si la orden es de transportación')
+
 
     transportation_type = fields.Selection([
         ('external', 'Externa'),
@@ -26,3 +27,8 @@ class Picking(models.Model):
 
         self.env['stock.picking'].browse(id_pikin.id).write({'name': name})
         return id_pikin
+
+    @api.onchange('sale_order_id')
+    def _onchange_sale_order_id(self):
+        for otp in self:
+            otp.origin = otp.sale_order_id.name

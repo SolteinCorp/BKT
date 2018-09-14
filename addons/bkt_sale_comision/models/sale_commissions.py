@@ -11,11 +11,9 @@ class SaleCommission(models.Model):
     _inherit = ['mail.thread']
     _order = 'create_date desc, id desc'
 
-
     @api.multi
     @api.depends('sales_order_ids')
     def _get_pay(self):
-
         total = 0
         for order in self:
             partial_amount = 0
@@ -23,7 +21,6 @@ class SaleCommission(models.Model):
                 partial_amount += sorder.amount_total
             total += partial_amount * (order.percent_commission / 100)
             order.amount_total = total
-
 
     @api.multi
     @api.depends('employee_id')
@@ -51,12 +48,14 @@ class SaleCommission(models.Model):
     amount_total = fields.Float(string='Total a pagar', compute='_get_pay', store=True,
                                 readonly=True)
     note = fields.Text('Detalle de la comisión')
-    sales_order_ids = fields.One2many('sale.order', 'sale_commission_id', required=True,
-                                      string='Órdenes de ventas', readonly=True,
-                                      states={'draft': [('readonly', False)]})
-    account_invoice_ids = fields.One2many('account.invoice', 'sale_commission_id', required=True,
-                                          string='Vía de pago', domain=[('type', '=', 'in_invoice')], readonly=True,
-                                          states={'draft': [('readonly', False)]})
+
+    sales_order_ids = fields.Many2many('sale.order', required=True, string='Órdenes de ventas', readonly=True,
+                                       states={'draft': [('readonly', False)]})
+
+    account_invoice_ids = fields.Many2many('account.invoice', required=True, string='Vía de pago',
+                                           domain=[('type', '=', 'in_invoice')],
+                                           readonly=True,
+                                           states={'draft': [('readonly', False)]})
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('validated_admin', 'Validada por administrador'),
@@ -75,13 +74,13 @@ class SaleCommission(models.Model):
         else:
             if vals.get('code', _('New')) == _('New'):
                 vals['code'] = self.env['ir.sequence'].next_by_code('sale.commissions.seq') or _('New')
-            amount = 0
-            for fact_id in vals.get('account_invoice_ids'):
-                for obj in fact_id[2]:
-                    amount += self.env['account.invoice'].browse(obj).amount_total
-                if amount >= self.get_pay(vals):
-                    result = super(SaleCommission, self).create(vals)
-                    return result
+            flag = self.validate_amount_invoice(vals)
+            if flag:
+                result = super(SaleCommission, self).create(vals)
+                # for fact_id in vals.get('account_invoice_ids'):
+                #     for obj in fact_id[2]:
+                #         self.env['account.invoice'].browse(obj).write({'sale_commission_id', result.id})
+                return result
             else:
                 raise UserError(
                     _('La suma del monto de las vias de pago debe ser mayor o igual que el monto total a pagar'))
@@ -105,13 +104,13 @@ class SaleCommission(models.Model):
                         super(SaleCommission, self).write(vals)
                     else:
                         raise UserError(
-                            _('La suma del monto de las vias de pago debe ser mayor o igual que el monto total a pagar'))
+                            _(
+                                'La suma del monto de las vias de pago debe ser mayor o igual que el monto total a pagar'))
                 else:
                     super(SaleCommission, self).write(vals)
         else:
             raise UserError(
                 _('Debe adicionar Órdenes de ventas y Vías de pago'))
-
 
     @api.multi
     def validate_amount_invoice(self, vals):
@@ -119,11 +118,11 @@ class SaleCommission(models.Model):
         for fact_id in vals.get('account_invoice_ids'):
             for obj in fact_id[2]:
                 amount += self.env['account.invoice'].browse(obj).amount_total
-            pay = self.get_pay(vals)
-            if amount >= pay:
-                return True
-            else:
-                return False
+        pay = self.get_pay(vals)
+        if amount >= pay:
+            return True
+        else:
+            return False
 
     @api.multi
     def validate_amount_sales(self, vals):
@@ -178,8 +177,6 @@ class SaleCommission(models.Model):
         else:
             return self.amount_total
 
-
-
     @api.multi
     def action_validated_admin(self):
         return self.write({'state': 'validated_admin'})
@@ -197,7 +194,7 @@ class SaleCommission(models.Model):
                 for acc in accounts_invoice:
                     if str(acc.state) == 'paid':
                         flag = False
-            if not flag :
+            if not flag:
                 commision.write({'state': 'done'})
 
 
