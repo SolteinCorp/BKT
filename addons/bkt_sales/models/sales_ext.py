@@ -47,14 +47,5 @@ class SaleOrder(models.Model):
         self.env['sale.order'].browse(id_so.id).write({'name': name})
         return id_so
 
-    # @api.multi
-    # def action_confirm(self):
-    #     confirm = super(SaleOrder, self).action_confirm()
-    #     if confirm:
-    #         project = self.env['project.project'].create({
-    #             'name': self.name,
-    #             'sale_order_id': self.id
-    #         })
-    #     return True
 
 
