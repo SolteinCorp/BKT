@@ -3,7 +3,7 @@
     <template id="sales_report_template">
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="report.external_layout">
+                <t t-call="web.external_layout">
                     <div class="page">
                         <h3>Acta de Terminación : <span t-field="o.name"/></h3>
                         <hr/>
