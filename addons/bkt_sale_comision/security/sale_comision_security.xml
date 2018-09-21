@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<data noupdate="1">
+
+    <record id="rule_sales_commission_salesman" model="ir.rule">
+            <field name="name">Crear comisiones de venta</field>
+            <field name="model_id" ref="bkt_sale_comision.model_sale_commission"/>
+            <field name="domain_force">[('employee_id', '=', user.employee_ids[0].id)]</field>
+            <field name="groups" eval="[(4,ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+
+
+</data>
+</odoo>
