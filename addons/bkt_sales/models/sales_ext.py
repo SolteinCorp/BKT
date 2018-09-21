@@ -2,6 +2,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import fields, models, api, _
+from odoo.exceptions import UserError
+
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -15,8 +17,65 @@ class SaleOrder(models.Model):
     otp_order_ids = fields.One2many('stock.picking', 'sale_order_id', string='Transportaciones')
     otp_count = fields.Integer(compute='_compute_otp_number', string='Transportaciones')
 
+    purchase_ids = fields.One2many('purchase.order', 'sale_order_id', string='Compras')
+    purchase_count = fields.Integer(compute='_compute_purchase_number', string='Compras')
+
     sale_commission_id = fields.Many2one('sale.commission', string='Comisiones de venta', index=True)
 
+    state = fields.Selection([
+        ('draft', 'Cotización'),
+        ('sent', 'Cotización Enviada'),
+        ('holden', 'Esperando anticipo'),
+        ('sale', 'Sales Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled'),
+    ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+
+    date_promise = fields.Date(string='Fecha promesa',
+                               states={'draft': [('invisible', True)],
+                                       'sent': [('invisible', True)],
+                                       'sale': [('invisible', False)],
+                                       'done': [('invisible', True)]})
+
+    advance_amount = fields.Float(string='Monto de anticipo', default=0.00,
+                                  states={'draft': [('invisible', True)],
+                                          'sent': [('invisible', True)],
+                                          'sale': [('invisible', False)],
+                                          'done': [('invisible', True)]})
+
+    contact_delivery_id = fields.Many2one('res.partner', string='Contacto de entrega', readonly=True,
+                                          states={'draft': [('readonly', False)]})
+    home_delivery = fields.Char(string='Domicilio de entrega', readonly=True,
+                                states={'draft': [('readonly', False)]})
+    terms_delivery = fields.Text(string='Cond. de entrega', readonly=True,
+                                 states={'draft': [('readonly', False)]})
+
+    order_line = fields.One2many('sale.order.line', 'order_id', string='Order Lines',
+                                 states={'cancel': [('readonly', True)],
+                                         'done': [('readonly', True), ('invisible', True)]}, copy=True,
+                                 auto_join=True)
+    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
+                                     track_visibility='onchange', states={'done': [('invisible', True)]})
+
+    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
+                                 states={'done': [('invisible', True)]})
+    amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all',
+                                   track_visibility='always', states={'done': [('invisible', True)]})
+
+    modify_sale = fields.Boolean(string='Enable Sales ?', compute='_set_access_for_sale')
+
+    @api.one
+    def _set_access_for_sale(self):
+        if self.env.user.has_group('sales_team.group_sale_manager'):
+            self.modify_sale = False
+        else:
+            self.modify_sale = True
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_purchase_number(self):
+        for record in self:
+            record.purchase_count = len(record.purchase_ids)
 
     @api.multi
     @api.depends('otp_order_ids')
@@ -36,16 +95,89 @@ class SaleOrder(models.Model):
         for mrp in self:
             mrp.mrp_count = len(mrp.mrp_ids)
 
-
     @api.model
     def create(self, vals):
-        id_so = super(SaleOrder,self).create(vals)
-        if 'company_id' in vals:
-            name = self.env['ir.sequence'].with_context(force_company=vals['company_id']).next_by_code('sale.order.ext') or _('New')
-        else:
-            name = self.env['ir.sequence'].next_by_code('sale.order.ext') or _('New')
-        self.env['sale.order'].browse(id_so.id).write({'name': name})
-        return id_so
+        if 'order_line' in vals:
+            for line in vals.get('order_line', False):
+                rec = line[2]
+                if self.env.user.has_group('sales_team.group_sale_manager'):
+                    if rec and rec.get('discount', False) and rec['discount'] > 7:
+                        raise UserError('El Responsable de Ventas solo puede especificar descuentos de hasta 7%.')
+                else:
+                    if rec and rec.get('discount', False) and rec['discount'] > 5:
+                        raise UserError('El Usuario de Ventas solo puede especificar descuentos de hasta 5%.')
+
+        # Makes sure partner_invoice_id', 'partner_shipping_id' and 'pricelist_id' are defined
+        if any(f not in vals for f in ['partner_invoice_id', 'partner_shipping_id', 'pricelist_id']):
+            partner = self.env['res.partner'].browse(vals.get('partner_id'))
+            addr = partner.address_get(['delivery', 'invoice'])
+            vals['partner_invoice_id'] = vals.setdefault('partner_invoice_id', addr['invoice'])
+            vals['partner_shipping_id'] = vals.setdefault('partner_shipping_id', addr['delivery'])
+            vals['pricelist_id'] = vals.setdefault('pricelist_id',
+                                                   partner.property_product_pricelist and partner.property_product_pricelist.id)
+        result = super(SaleOrder, self).create(vals)
+        return result
+
+    @api.multi
+    def action_confirm(self):
+        for record in self:
+            super(SaleOrder, record).action_confirm()
+            name = record.env['ir.sequence'].next_by_code('sale.order.ext') or _('New')
+            record.name = name
+            record.cancel_opportunity_rel()
+            record.move_stage_oportunity()
+            return True
+
+    @api.multi
+    def cancel_opportunity_rel(self):
+        for record in self:
+            if record.opportunity_id:
+                oport = record.opportunity_id
+                obs = record.search([('opportunity_id', '=', oport.id)])
+                if len(obs) > 0:
+                    for sales in obs:
+                        if sales.id != record.id:
+                            sales.write({'state': 'cancel'})
+
+    @api.multi
+    def move_stage_oportunity(self):
+        for record in self:
+            if record.opportunity_id:
+                oport = record.opportunity_id
+                stages = record.env['crm.stage'].search([])
+                for sta in stages:
+                    if sta.probability == 95:
+                        oport.write({'stage_id': sta.id})
+
+    @api.multi
+    def action_hold(self):
+        for record in self:
+            return record.write({'state': 'holden'})
+
+    @api.multi
+    def write(self, vals):
+        if 'order_line' in vals:
+            for line in vals.get('order_line', False):
+                rec = line[2]
+                if self.env.user.has_group('sales_team.group_sale_manager'):
+                    if rec and rec.get('discount', False) and rec['discount'] > 7:
+                        raise UserError('El Responsable de Ventas solo puede especificar descuentos de hasta 7%.')
+                else:
+                    if rec and rec.get('discount', False) and rec['discount'] > 5:
+                        raise UserError('El Usuario de Ventas solo puede especificar descuentos de hasta 5%.')
+        return super(SaleOrder, self).write(vals)
 
 
+class Partner(models.Model):
+    _inherit = 'res.partner'
 
+    company_type = fields.Selection(string='Company Type',
+                                    selection=[('person', 'Persona física'), ('company', 'Persona moral')],
+                                    compute='_compute_company_type', inverse='_write_company_type')
+
+    vat = fields.Char(string='TIN', required=True, help="Tax Identification Number. "
+                                                        "Fill it if the company is subjected to taxes. "
+                                                        "Used by the some of the legal statements.")
+    _sql_constraints = [
+        ('vat_uniq', 'unique (vat)', "El campo RFC no debe repetirse !")
+    ]

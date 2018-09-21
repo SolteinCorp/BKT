@@ -183,7 +183,7 @@ class SaleCommission(models.Model):
 
     @api.multi
     def action_validated_employee(self):
-        return self.write({'state': 'validated_employee'})
+        return self.sudo().write({'state': 'validated_employee'})
 
     @api.multi
     def check_status(self):
