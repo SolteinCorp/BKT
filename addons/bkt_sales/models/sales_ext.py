@@ -11,6 +11,9 @@ class SaleOrder(models.Model):
     project_ids = fields.One2many('project.project', 'sale_order_id', string='Proyectos')
     project_count = fields.Integer(compute='_compute_project_number', string='Proyectos')
 
+    project_instalation_ids = fields.One2many('project.project', 'sale_order_id2', string='Proyectos instalación')
+    project_instalation_count = fields.Integer(compute='_compute_project_instalation_number', string='Proyectos instalación')
+
     mrp_ids = fields.One2many('mrp.production', 'sale_order_id', string='Producciones')
     mrp_count = fields.Integer(compute='_compute_mrp_number', string='Producciones')
 
@@ -88,6 +91,13 @@ class SaleOrder(models.Model):
     def _compute_project_number(self):
         for project in self:
             project.project_count = len(project.project_ids)
+
+
+    @api.multi
+    @api.depends('project_ids')
+    def _compute_project_instalation_number(self):
+        for project in self:
+            project.project_instalation_count = len(project.project_instalation_ids)
 
     @api.multi
     @api.depends('mrp_ids')
