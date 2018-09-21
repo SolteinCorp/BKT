@@ -9,12 +9,15 @@
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//field[@name='name']" position="after">
+                    <field name="visibility" invisible="1"/>
                     <field name="is_installation"/>
                 </xpath>
+                <field name="is_installation" position="attributes">
+                      <attribute name="attrs">{'invisible':[('visibility','=',False)]}</attribute>
+                </field>
             </data>
         </field>
     </record>
-
 
 
      <record id="view_project_ext_form" model="ir.ui.view">
@@ -25,16 +28,20 @@
             <data>
                 <xpath expr="//field[@name='name']" position="after">
                      <group>
-                        <field name="is_installation" />
+                          <field name="is_installation" />
                     </group>
                 </xpath>
-                <!--xpath expr="//div[@name='button_box']" position="inside">
-                     <button class="oe_stat_button" name="print_project_pdf"
-                              type="object" icon="fa-print" attrs="{'invisible': [('is_installation','=',False)]}">
-                           <span>Imprimir</span>
-                     </button>
-                </xpath-->
+                <xpath expr="//field[@name='label_tasks']" position="after">
+                        <field name="visibility" invisible="1"/>
+                </xpath>
 
+                <xpath expr="//button[2]" position="attributes">
+                    <attribute name="context">{'default_is_installation':is_installation, 'default_visibility':is_installation}</attribute>
+                 </xpath>
+
+                <field name="is_installation" position="attributes">
+                      <attribute name="attrs">{'invisible':[('visibility','=',False)]}</attribute>
+                </field>
             </data>
         </field>
     </record>
@@ -51,6 +58,12 @@
                         <field name="is_installation" />
                     </group>
                 </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                        <field name="visibility" invisible="1"/>
+                </xpath>
+                <field name="is_installation" position="attributes">
+                      <attribute name="attrs">{'invisible':[('visibility','=',False)]}</attribute>
+                </field>
             </data>
         </field>
     </record>
