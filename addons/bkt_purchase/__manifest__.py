@@ -15,8 +15,9 @@ It assigns manager and user access rights to the Administrator for the accountin
 """,
     'website': 'https://www.odoo.com/page/crm',
     'depends': ['purchase','sale'],
-    'data': [ 
-            # 'views/crm_ext_views.xml',
+    'data': [
+        'data/ir_sequence_data.xml',
+        'views/purchase_ext_views.xml',
      ],
     'demo': [],
     'test': [],

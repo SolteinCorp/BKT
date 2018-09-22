@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-     <record id="view_crm_lead_ext_form" model="ir.ui.view">
-            <field name="name">crm.lead.ext.form</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+     <record id="purchase_order_ext_bkt_view_form" model="ir.ui.view">
+            <field name="name">purchase.order.ext.bkt.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//h2[@class='o_row']" position="before">
-                  <h2 >
-                      <field name="code"/>
-                  </h2>
-                  <br/>
+                <xpath expr="//field[@name='date_order']" position="before">
+                   <field name="sale_order_id"/>
                 </xpath>
             </field>
      </record>
