@@ -73,7 +73,7 @@
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="%(bkt_sales.action_project_list)d" type="action" class="oe_stat_button"
                             icon="fa-tasks"
-                            attrs="{'invisible': [('state', 'in', ['draft','sent'])]}"
+                            attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}"
                             context="{'search_default_partner_id': partner_id,'default_partner_id': partner_id,'default_visibility':0}">
                         <!-- groups="sales_team.group_sale_manager"-->
                         <field name="project_count" widget="statinfo" string="Proyectos"/>
@@ -83,7 +83,7 @@
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="%(bkt_sales.action_project_instalation_list)d" type="action" class="oe_stat_button"
                             icon="fa-tasks"
-                            attrs="{'invisible': [('state', 'in', ['draft','sent'])]}"
+                            attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}"
                             context="{'search_default_partner_id': partner_id,'default_partner_id': partner_id}">
                         <field name="project_instalation_count" widget="statinfo" string="Proy. instal."/>
                 </button>
@@ -91,7 +91,7 @@
 
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="%(bkt_sales.action_mrp_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
-                        attrs="{'invisible': [('state', 'in', ['draft','sent'])]}">
+                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
                     <!--groups="sales_team.group_sale_manager"-->
                     <field name="mrp_count" widget="statinfo" string="Producciones"/>
                 </button>
@@ -101,7 +101,7 @@
                 <button name="%(bkt_sales.action_otp_list)d" type="action" class="oe_stat_button"
                         context="{'search_default_sale_order_id': active_id,'default_sale_order_id': active_id,'default_is_transportation': 'true'}"
                         icon="fa-tasks"
-                        attrs="{'invisible': [('state', 'in', ['draft','sent'])]}">
+                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
                     <!-- groups="sales_team.group_sale_manager"-->
                     <field name="otp_count" widget="statinfo" string="Transportaciones"/>
                 </button>
@@ -109,7 +109,7 @@
 
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="%(bkt_sales.action_purchase_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
-                        attrs="{'invisible': [('state', 'in', ['draft','sent'])]}">
+                       attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
                     <!--groups="sales_team.group_sale_manager"-->
                     <field name="purchase_count" widget="statinfo" string="Compras"/>
                 </button>
@@ -138,89 +138,153 @@
     </field>
 </record>
 
-<record id="bkt_sale_order_view_form" model="ir.ui.view">
-<field name="name">bkt.sale.order.form</field>
-<field name="model">sale.order</field>
-<field name="inherit_id" ref="sale_management.sale_order_view_form"/>
-<field name="arch" type="xml">
-    <xpath expr="//button[1]" position="attributes">
-        <attribute name="attrs">{'invisible': ['|',('invoice_status', '!=', 'to invoice'),('state','=','done')]}
-        </attribute>
-        <attribute name="groups">sales_team.group_sale_manager</attribute>
-    </xpath>
-    <xpath expr="//button[2]" position="attributes">
-        <attribute name="groups">sales_team.group_sale_manager</attribute>
-    </xpath>
-</field>
-</record>
+    <record id="bkt_sale_order_view_form" model="ir.ui.view">
+    <field name="name">bkt.sale.order.form</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale_management.sale_order_view_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//button[1]" position="attributes">
+            <attribute name="attrs">{'invisible': ['|',('invoice_status', '!=', 'to invoice'),('state','=','done')]}
+            </attribute>
+            <attribute name="groups">sales_team.group_sale_manager</attribute>
+        </xpath>
+        <xpath expr="//button[2]" position="attributes">
+            <attribute name="groups">sales_team.group_sale_manager</attribute>
+        </xpath>
+    </field>
+    </record>
 
-<record id="bkt_sale_order_view_form_salesman" model="ir.ui.view">
-<field name="name">bkt_sale_order_view_form_salesman</field>
-<field name="model">sale.order</field>
-<field name="inherit_id" ref="sale.view_order_form"/>
-<field name="arch" type="xml">
-    <xpath expr="//field[@name='payment_term_id']" position="before">
-        <field name="modify_sale" invisible="1"/>
-    </xpath>
-    <xpath expr="//field[@name='order_line']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='payment_term_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='date_promise']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='advance_amount']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='user_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='tag_ids']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='team_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='client_order_ref']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='origin']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='campaign_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='medium_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='source_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='opportunity_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='partner_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
-    <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
-        <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
-    </xpath>
+    <record id="bkt_sale_order_view_form_salesman" model="ir.ui.view">
+    <field name="name">bkt_sale_order_view_form_salesman</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_term_id']" position="before">
+            <field name="modify_sale" invisible="1"/>
+        </xpath>
 
-    <!--        <xpath expr="//field[@name='date_promise']" position="attributes">
-                <attribute name="readonly">[('state','not in',['draft','sent'])]</attribute>
+        <xpath expr="//field[@name='order_line']" position="replace">
+               <field name="order_line">
+                     <tree string="Sales Order Lines" editable="bottom" decoration-info="invoice_status=='to invoice'">
+                        <field name="sequence" widget="handle"/>
+                        <field name="product_updatable" invisible="1"/>
+                        <field name="product_id"
+                            attrs="{'readonly': [('product_updatable', '=', False)]}"
+                            force_save="1"
+                            context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                           />
+                        <field name="layout_category_id" groups="sale.group_sale_layout"/>
+                        <field name="name"/>
+                        <field name="modify_tree" invisible="1"/>
+                        <field name="product_uom_qty"
+                            string="Ordered Qty"
+                            context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                        />
+                        <field name="qty_delivered"
+                            attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                        <field name="qty_invoiced"
+                            attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                        <field name="qty_to_invoice" invisible="1"/>
+                        <field name="product_uom"
+                            attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}"
+                            context="{'company_id': parent.company_id}"
+                            groups="product.group_uom" options='{"no_open": True}'/>
+                        <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <field name="price_unit"
+                            attrs="{'readonly': [('qty_invoiced', '&gt;', 0)],'invisible':[('modify_tree','=',True)]}"/>
+                        <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                            attrs="{'readonly': [('qty_invoiced', '&gt;', 0)],'invisible':[('modify_tree','=',True)]}"/>
+                        <field name="discount" groups="sale.group_discount_per_so_line" attrs="{'invisible':[('modify_tree','=',True)]}"/>
+                        <field name="price_subtotal" widget="monetary" groups="sale.group_show_price_subtotal" attrs="{'invisible':[('modify_tree','=',True)]}"/>
+                        <field name="price_total" widget="monetary" groups="sale.group_show_price_total" attrs="{'invisible':[('modify_tree','=',True)]}"/>
+                        <field name="qty_delivered_updateable" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <field name="invoice_status" invisible="1"/>
+                        <field name="customer_lead" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+             </field>
+        </xpath>
+
+        <xpath expr="//field[@name='order_line']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='payment_term_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='date_promise']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent','holden'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='advance_amount']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent','holden'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='user_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='tag_ids']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='team_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='client_order_ref']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='origin']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='campaign_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='medium_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='source_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='opportunity_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='partner_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+            <attribute name="attrs">{'readonly':[('modify_sale','=',True),('state','not in',['draft','sent'])]}</attribute>
+        </xpath>
+
+        <!--        <xpath expr="//field[@name='date_promise']" position="attributes">
+                    <attribute name="readonly">[('state','not in',['draft','sent'])]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='advance_amount']" position="attributes">
+                    <attribute name="readonly">[('state','not in',['draft','sent'])]</attribute>
+                </xpath>-->
+    </field>
+    </record>
+
+
+<!--    <record id="view_order_line_bkt_tree" model="ir.ui.view">
+        <field name="name">sale.order.line.bkt.tree</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_order_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                 <field name="modify_tree" invisible="0"/>
             </xpath>
-            <xpath expr="//field[@name='advance_amount']" position="attributes">
-                <attribute name="readonly">[('state','not in',['draft','sent'])]</attribute>
-            </xpath>-->
-</field>
-</record>
 
-        </odoo>
+            <xpath expr="//field[@name='price_subtotal']" position="attributes">
+                <attribute name="attrs">{'invisible':[('modify_tree','=',True)]}</attribute>
+            </xpath>
+
+        </field>
+    </record>-->
+
+
+
+
+</odoo>
