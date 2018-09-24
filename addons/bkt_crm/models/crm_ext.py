@@ -10,7 +10,6 @@ class CrmLead(models.Model):
     code = fields.Char('Código', index=True, readonly=True)
     sale_number = fields.Integer(compute='_compute_sale_amount_total', string="Número de cotizaciones")
 
-
     @api.depends('order_ids')
     def _compute_sale_amount_total(self):
         for lead in self:
@@ -28,11 +27,11 @@ class CrmLead(models.Model):
 
     @api.multi
     def generate_code(self, number):
-        if number == 1:
+        if self.code == False and number == 1:
             for record in self:
                 if record.user_id:
                     code = record.env['ir.sequence'].next_by_code('crm.lead.ext') or _('New')
-                    name_user = record.user_id.name
+                    name_user = record.user_id.name[0:3]
                     code = code + '/' + name_user
                     record.write({'code': code})
                 else:
@@ -41,10 +40,14 @@ class CrmLead(models.Model):
 
     @api.multi
     def write(self, vals):
-        super(CrmLead, self).write(vals)
+        bandera = True
         if vals.get('user_id'):
+            if self.user_id == self.env['res.users'].browse(vals.get('user_id')):
+                bandera = False
+        super(CrmLead, self).write(vals)
+        if bandera and vals.get('user_id'):
             if self.sale_number > 0:
                 new_code = self.env['res.users'].browse(vals.get('user_id')).name
                 code1 = self.env['crm.lead'].browse(self.id).code
-                code = code1 + '/' + new_code
+                code = code1 + '/' + new_code[0:3]
                 self.env['crm.lead'].browse(self.id).write({'code': code})

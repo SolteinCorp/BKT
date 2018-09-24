@@ -12,7 +12,8 @@ class SaleOrder(models.Model):
     project_count = fields.Integer(compute='_compute_project_number', string='Proyectos')
 
     project_instalation_ids = fields.One2many('project.project', 'sale_order_id2', string='Proyectos instalación')
-    project_instalation_count = fields.Integer(compute='_compute_project_instalation_number', string='Proyectos instalación')
+    project_instalation_count = fields.Integer(compute='_compute_project_instalation_number',
+                                               string='Proyectos instalación')
 
     mrp_ids = fields.One2many('mrp.production', 'sale_order_id', string='Producciones')
     mrp_count = fields.Integer(compute='_compute_mrp_number', string='Producciones')
@@ -37,21 +38,29 @@ class SaleOrder(models.Model):
     date_promise = fields.Date(string='Fecha promesa',
                                states={'draft': [('invisible', True)],
                                        'sent': [('invisible', True)],
+                                       'holden': [('invisible', False)],
                                        'sale': [('invisible', False)],
                                        'done': [('invisible', True)]})
 
     advance_amount = fields.Float(string='Monto de anticipo', default=0.00,
                                   states={'draft': [('invisible', True)],
                                           'sent': [('invisible', True)],
+                                          'holden': [('invisible', False)],
                                           'sale': [('invisible', False)],
                                           'done': [('invisible', True)]})
 
     contact_delivery_id = fields.Many2one('res.partner', string='Contacto de entrega', readonly=True,
-                                          states={'draft': [('readonly', False)]})
+                                          states={'draft': [('readonly', False)],
+                                                  'sent': [('readonly', False)],
+                                                  'holden': [('readonly', False)]})
     home_delivery = fields.Char(string='Domicilio de entrega', readonly=True,
-                                states={'draft': [('readonly', False)]})
+                                states={'draft': [('readonly', False)],
+                                        'sent': [('readonly', False)],
+                                        'holden': [('readonly', False)]})
     terms_delivery = fields.Text(string='Cond. de entrega', readonly=True,
-                                 states={'draft': [('readonly', False)]})
+                                 states={'draft': [('readonly', False)],
+                                         'sent': [('readonly', False)],
+                                         'holden': [('readonly', False)]})
 
     order_line = fields.One2many('sale.order.line', 'order_id', string='Order Lines',
                                  states={'cancel': [('readonly', True)],
@@ -91,7 +100,6 @@ class SaleOrder(models.Model):
     def _compute_project_number(self):
         for project in self:
             project.project_count = len(project.project_ids)
-
 
     @api.multi
     @api.depends('project_ids')
