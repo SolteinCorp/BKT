@@ -64,7 +64,7 @@ class SaleOrder(models.Model):
 
     order_line = fields.One2many('sale.order.line', 'order_id', string='Order Lines',
                                  states={'cancel': [('readonly', True)],
-                                         'done': [('readonly', True), ('invisible', True)]}, copy=True,
+                                         'done': [('readonly', True), ('invisible', False)]}, copy=True,
                                  auto_join=True)
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      track_visibility='onchange', states={'done': [('invisible', True)]})
@@ -199,3 +199,16 @@ class Partner(models.Model):
     _sql_constraints = [
         ('vat_uniq', 'unique (vat)', "El campo RFC no debe repetirse !")
     ]
+
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    @api.one
+    def _set_modify_tree(self):
+        if self.order_id.state == 'done':
+            self.modify_tree = True
+        else:
+            self.modify_tree = False
+
+    modify_tree = fields.Boolean(string='Enable tree ugly ?', compute='_set_modify_tree')
