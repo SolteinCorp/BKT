@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-     <record id="purchase_order_ext_bkt_view_form" model="ir.ui.view">
-            <field name="name">purchase.order.ext.bkt.form</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="purchase.purchase_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='date_order']" position="before">
-                   <field name="sale_order_id"/>
-                </xpath>
-            </field>
-     </record>
+    <delete model="ir.ui.menu" search="[('name','=','Requests for Quotation')]"/>
+
+<!--    <menuitem action="account.action_invoice_tree2" id="menu_action_invoice_tree2_bkt"
+              parent="account.menu_finance_payables_documents"
+              name="Facturas de proveedor"
+              groups="bkt_purchase.group_purchase_aprob"/> sequence="1"/>-->
+
+
+    <menuitem action="purchase.purchase_rfq" id="menu_purchase_rfq"
+              parent="purchase.menu_procurement_management"
+              name="Cotizaciones"
+              sequence="1"/>
+
+    <record id="purchase_order_ext_bkt_view_form" model="ir.ui.view">
+        <field name="name">purchase.order.ext.bkt.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_order']" position="before">
+                <field name="sale_order_id"/>
+            </xpath>
+        </field>
+    </record>
 
 
 </odoo>

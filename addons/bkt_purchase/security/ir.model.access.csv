@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_aprobador,sale_order_aprobador,sale.model_sale_order,bkt_purchase.group_purchase_aprob,1,1,1,1
+access_account_invoice_aprobador,account_invoice_aprobador,account.model_account_invoice,bkt_purchase.group_purchase_aprob,1,1,1,1
+
+

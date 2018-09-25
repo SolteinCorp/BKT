@@ -1,32 +1,28 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
-    'name': 'Sales Ordeder Ext',
+    'name': 'PURCHASE REQUISITON',
     'version': '1.0',
-    'category': 'Sales',
+    'category': 'PURCHASE',
     'sequence': 35,
-    'summary': 'Sales Order Ext',
+    'summary': 'PURCHASE REQUISITION',
     'description': """
-Sales Access Rights
+Purchase Access Rights
 ========================
 It gives the Administrator user access to all accounting features such as journal items and the chart of accounts.
 
 It assigns manager and user access rights to the Administrator for the accounting application and only user rights to the Demo user.
 """,
-    'website': 'https://www.odoo.com/page/accounting',
-    'depends': ['sale','sale_management','sale_mrp','stock','sale_stock', 'purchase'],
+    'website': 'https://www.odoo.com/page/crm',
+    'depends': ['purchase_requisition'],
     'data': [
         'data/ir_sequence_data.xml',
-        'views/sales_ext_views.xml',
-        'views/partner_ext_view.xml',
-        'report/sales_report_template.xml',
-        'security/sale_security.xml',
-        'security/ir.model.access.csv',
-    ],
+        'views/purchase_requisition_ext_view.xml',
+     ],
     'demo': [],
     'test': [],
     'installable': True,
     'auto_install': False,
     'application': True,
-
+    
 }
