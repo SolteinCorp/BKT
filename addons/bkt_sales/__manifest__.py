@@ -16,11 +16,12 @@ It assigns manager and user access rights to the Administrator for the accountin
     'website': 'https://www.odoo.com/page/accounting',
     'depends': ['sale','sale_management','sale_mrp','stock','sale_stock', 'purchase'],
     'data': [
+        'security/sale_security.xml',
         'data/ir_sequence_data.xml',
         'views/sales_ext_views.xml',
         'views/partner_ext_view.xml',
         'report/sales_report_template.xml',
-        'security/sale_security.xml',
+        'report/sales_work_order_report_template.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [],

@@ -91,6 +91,8 @@
                 </xpath>
                 <xpath expr="//button[@id='action_confirm']" position="after">
                     <button name="action_hold" type="object" string="Esperando Anticipo" states="sent"/>
+                    <button name="action_print_saleorder" type="object" string="Orden de trabajo" states="sale"
+                    icon="fa-print" class="btn-primary"/>
                 </xpath>
                 <xpath expr="//header/button[@name='action_confirm'][2]" position="replace"/>
 
@@ -147,6 +149,7 @@
                 <field name="code_oportunity"/>
                 <field name="invoice_paid_all" invisible="1"/>
                 <field name="sale_commision_rel" invisible="1"/>
+                <field name="oport_code" invisible="1"/>
 
             </xpath>
 

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sales_work_order_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="height:50px">
+
+                        <div class="table">
+                            <div class="row ">
+                                <div class="col-xs-6; text-left" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">ORDEN DE TRABAJO</span>
+                                </div>
+                                <div class="col-xs-3; text-right" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">Folio:</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='width:25%;background-color:#000000;'>
+                                    <h3 style="text-color:#FFFFFF;">NO. DE CONTIZACIÓN</h3>
+                                </div>
+                                <div class="col-xs-9" style='width:75%;background-color:#FFFFFF;'>
+                                    <span t-field="o.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='width:25%;background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">FECHA</span>
+                                </div>
+                                <div class="col-xs-3" style='width:25%;background-color:#FFFFFF;'>
+                                    <span t-field="o.confirmation_date"/>
+                                </div>
+                                <div class="col-xs-3" style='width:25%;background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">SOLICITA</span>
+                                </div>
+                                <div class="col-xs-3" style='width:25%;background-color:#FFFFFF;'>
+                                    <span t-field="o.user_id.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">CLIENTE</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.contact_delivery_id.name"/>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">EMPRESA</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.partner_id.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">REQUIERE ENVÍO</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+
+                                </div>
+                                <div class="col-xs-3" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">REQUIERE INSTALACIÓN</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">LUGAR DE ENVÍO</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.home_delivery"/>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">CONTACTO DE ENTREGA</span>
+                                </div>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.contact_delivery_id.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">DOMICILIO DE ENTREGA</span>
+                                </div>
+                                <div class="col-xs-9" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.partner_shipping_id.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">FECHA PROMESA</span>
+                                </div>
+                                <div class="col-xs-9" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.date_promise"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
+                                    <span style="text-color:#FFFFFF;">FECHA DE ENTREGA</span>
+                                </div>
+                                <div class="col-xs-9" style='background-color:#FFFFFF;'>
+                                    <span t-field="o.confirmation_date"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="table">
+                            <div class="row" style="height:38px">
+                                <div class="col-xs-3; text-left">
+                                    <span style="text-color:#FFFFFF;">Productos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <table class="table table-condensed table-bordered">
+                            <thead style='background-color:#000000;'>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Modelo</th>
+                                    <th>Imagen</th>
+                                    <th>Cant.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.order_line" t-as="line">
+                                    <td><span t-field="line.product_id.default_code"/></td>
+                                    <td><span t-field="line.product_id.name"/></td>
+                                    <td><span />model</td>
+                                    <td><span t-field="line.product_id.image_medium"/></td>
+                                    <td><span t-field="line.product_uom_qty"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <div class="row" style="height:38px">
+                            <div class="col-xs-3; text-left">
+                                <span style="text-color:#FFFFFF;">Órdenes de Compra</span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row" style="height:38px">
+                            <div class="col-xs-2; text-left">
+                                <span >Folio</span>
+                            </div>
+                            <div class="col-xs-2; text-left">
+                                <span ></span>
+                            </div>
+                            <div class="col-xs-2; text-left">
+                                <span >Fecha de Entrega</span>
+                            </div>
+
+                            <div class="col-xs-2; text-left">
+                                <span ></span>
+                            </div>
+                            <div class="col-xs-2; text-left">
+                                <span >Status</span>
+                            </div>
+
+                            <div class="col-xs-2; text-left">
+                                <span ></span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row" style="height:38px">
+                            <div class="col-xs-3; text-left">
+                                <span style="text-color:#FFFFFF;">Órdenes de Producción</span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row" style="height:38px">
+                            <div class="col-xs-3; text-left">
+                                <span >Folio</span>
+                            </div>
+                            <div class="col-xs-3; text-left">
+                                <span ></span>
+                            </div>
+                            <div class="col-xs-3; text-left">
+                                <span >Status</span>
+                            </div>
+
+                            <div class="col-xs-3; text-left">
+                                <span ></span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row" style="height:38px">
+                            <div class="col-xs-3; text-left">
+                                <span style="text-color:#FFFFFF;">Órdenes de Salida</span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row" style="height:38px">
+                            <div class="col-xs-2; text-left">
+                                <span >Folio</span>
+                            </div>
+                            <div class="col-xs-2; text-left">
+                                <span ></span>
+                            </div>
+                            <div class="col-xs-2; text-left">
+                                <span >Fecha de Entrega</span>
+                            </div>
+
+                            <div class="col-xs-2; text-left">
+                                <span ></span>
+                            </div>
+                            <div class="col-xs-2; text-left">
+                                <span >Status</span>
+                            </div>
+
+                            <div class="col-xs-2; text-left">
+                                <span ></span>
+                            </div>
+                        </div>
+
+                        <hr/>
+                        <table class="table table-condensed table-bordered">
+                            <thead style='background-color:#000000;'>
+                                <tr>
+                                    <th>ACUERDOS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="o.terms_delivery"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </t>
+                <div style="page-break-after:always;"/>
+            </t>
+        </t>
+    </template>
+
+     <report
+        id="sales_work_order_report"
+        name="bkt_sales.sales_work_order_report_template"
+        model="sale.order"
+        report_type="qweb-html"
+        string="Orden de Trabajo"
+        file="bkt_sales.sales_work_order_report_template"
+        menu="False"
+        attachment_use="False"
+    />
+</odoo>

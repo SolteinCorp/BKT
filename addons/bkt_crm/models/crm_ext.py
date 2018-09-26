@@ -11,7 +11,6 @@ class CrmLead(models.Model):
     sale_number = fields.Integer(compute='_compute_sale_amount_total', string="Número de cotizaciones")
     date_promise = fields.Date(string='Fecha promesa')
 
-
     @api.depends('order_ids')
     def _compute_sale_amount_total(self):
         for lead in self:
@@ -39,6 +38,26 @@ class CrmLead(models.Model):
                 else:
                     code = record.env['ir.sequence'].next_by_code('crm.lead.ext') or _('New')
                     record.env['crm.lead'].browse(record.id).write({'code': code})
+                code_aux = self.code + '/1'
+                self.order_ids[0].write({'name': code_aux, 'oport_code': 1})
+        if number > 1:
+            self.generate_code_by_sale_order()
+
+    @api.multi
+    def generate_code_by_sale_order(self):
+        for record in self:
+            mayor = record.order_ids[0]
+            for order in record.order_ids:
+                if order.oport_code > mayor.oport_code:
+                    mayor = order
+            for order in record.order_ids:
+                if order.oport_code == 0:
+                    num = mayor.oport_code + 1
+                    code = record.code + '/' + str(num)
+                    order.write({'name': code, 'oport_code': num})
+
+
+
 
     @api.multi
     def write(self, vals):
