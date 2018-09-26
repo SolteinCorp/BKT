@@ -21,7 +21,7 @@
                  </xpath>
                 <xpath expr="//header/button[2]" position="replace">
                       <button name="%(action_account_invoice_payment)d" type="action" states="approved" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight"/>
-                      <button name="btn_approved" id="btn_approved_bkt" type="object" states="open" string="Aprobar" groups="account.group_account_invoice" class="oe_highlight"/>
+                      <button name="btn_approved" id="btn_approved_bkt" type="object" states="open" string="Aprobar" groups="bkt_purchase.group_purchase_aprob" class="oe_highlight"/>
 				  </xpath>
                 <xpath expr="//field[@name='partner_id']" position="before">
                       <field name="code_invoice_external"/>

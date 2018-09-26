@@ -8,26 +8,56 @@ from odoo.exceptions import UserError
 class SaleCommission(models.Model):
     _name = "sale.commission"
     _description = "Sale Commissions"
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc, id desc'
 
     @api.multi
     @api.depends('sales_order_ids')
     def _get_pay(self):
         total = 0
-        for order in self:
+        for record in self:
             partial_amount = 0
-            for sorder in order.sales_order_ids:
-                partial_amount += sorder.amount_total
-            total += partial_amount * (order.percent_commission / 100)
-            order.amount_total = total
+            for sorder in record.sales_order_ids:
+                partial_amount += record.clasifi_invoice_by_commision(sorder)
+            record.amount_total = partial_amount
+
+    def clasifi_invoice_by_commision(self, order):
+        if order.team_id.team_type == 'website':
+            partial_amount = order.amount_total
+            total = partial_amount * (self.percent_commission_vs / 100)
+            return total
+        if order.team_id.team_type != 'website':
+            partial_amount = order.amount_total
+            total = partial_amount * (self.percent_commission_vcn / 100)
+            return total
 
     @api.multi
     @api.depends('employee_id')
-    def _get_percent(self):
+    def _get_percent_vs(self):
         self.check_status()
         for comm in self:
-            comm.percent_commission = comm.employee_id.percent_commission
+            comm.percent_commission_vs = comm.employee_id.percent_commission_vs
+
+    @api.multi
+    @api.depends('employee_id')
+    def _get_percent_v2(self):
+        self.check_status()
+        for comm in self:
+            comm.percent_commission_v2 = comm.employee_id.percent_commission_v2
+
+    @api.multi
+    @api.depends('employee_id')
+    def _get_percent_vce(self):
+        self.check_status()
+        for comm in self:
+            comm.percent_commission_vce = comm.employee_id.percent_commission_vce
+
+    @api.multi
+    @api.depends('employee_id')
+    def _get_percent_vcn(self):
+        self.check_status()
+        for comm in self:
+            comm.percent_commission_vcn = comm.employee_id.percent_commission_vcn
 
     code = fields.Char(string='Codigo de la comisión', required=True, copy=False, readonly=True,
                        states={'draft': [('readonly', False)]}, index=True, default=lambda self: _('New'))
@@ -43,8 +73,15 @@ class SaleCommission(models.Model):
         ('bono', 'Bono')], string='Tipo de comisión', required=True, default='commision', readonly=True,
         states={'draft': [('readonly', False)]})
 
-    percent_commission = fields.Float(string='% de comisión', compute='_get_percent',
-                                      readonly=True)
+    percent_commission_vs = fields.Float(string='% Comisión ventas asignadas vía Sistema', compute='_get_percent_vs',
+                                         readonly=True, states={'draft': [('readonly', False)]})
+    percent_commission_v2 = fields.Float(string='% Comisión a partir de la segunda Venta', compute='_get_percent_v2',
+                                         readonly=True, states={'draft': [('readonly', False)]})
+    percent_commission_vce = fields.Float(string='% Comisión ventas a cliente existente', compute='_get_percent_vce',
+                                          readonly=True, states={'draft': [('readonly', False)]})
+    percent_commission_vcn = fields.Float(string='% Comisión ventas a clientes nuevos', compute='_get_percent_vcn',
+                                          readonly=True, states={'draft': [('readonly', False)]})
+
     amount_total = fields.Float(string='Total a pagar', compute='_get_pay', store=True,
                                 readonly=True)
     note = fields.Text('Detalle de la comisión')
@@ -77,13 +114,15 @@ class SaleCommission(models.Model):
             flag = self.validate_amount_invoice(vals)
             if flag:
                 result = super(SaleCommission, self).create(vals)
-                # for fact_id in vals.get('account_invoice_ids'):
-                #     for obj in fact_id[2]:
-                #         self.env['account.invoice'].browse(obj).write({'sale_commission_id', result.id})
+                self.sale_commision_rel(result)
                 return result
             else:
                 raise UserError(
                     _('La suma del monto de las vias de pago debe ser mayor o igual que el monto total a pagar'))
+
+    def sale_commision_rel(self, comm):
+        for order in comm.sales_order_ids:
+            order.write({'sale_commision_rel': True})
 
     @api.multi
     def write(self, vals):
@@ -94,6 +133,7 @@ class SaleCommission(models.Model):
                 flag_1 = self.validate_amount_invoice(vals)
                 if flag_1:
                     super(SaleCommission, self).write(vals)
+                    self.sale_commision_rel(self)
                 else:
                     raise UserError(
                         _('La suma del monto de las vias de pago debe ser mayor o igual que el monto total a pagar'))
@@ -102,12 +142,14 @@ class SaleCommission(models.Model):
                     flag_1 = self.validate_amount_sales(vals)
                     if flag_1:
                         super(SaleCommission, self).write(vals)
+                        self.sale_commision_rel(self)
                     else:
                         raise UserError(
                             _(
                                 'La suma del monto de las vias de pago debe ser mayor o igual que el monto total a pagar'))
                 else:
                     super(SaleCommission, self).write(vals)
+                    self.sale_commision_rel(self)
         else:
             raise UserError(
                 _('Debe adicionar Órdenes de ventas y Vías de pago'))
@@ -152,12 +194,13 @@ class SaleCommission(models.Model):
             return False
         return True
 
-    @api.onchange('commission_type')
+    @api.onchange('commission_type', 'employee_id')
     def _onchangeCommisionType(self):
         if self.commission_type == 'commision':
-            dom = [('invoice_status', '=', 'invoiced')]
+            dom = [('invoice_status', '=', 'invoiced'), ('user_id', '=', self.employee_id.user_id.id),
+                   ('invoice_paid_all', '=', True),('sale_commision_rel', '=', False)]
         else:
-            dom = [('state', '=', 'sale')]
+            dom = [('state', '=', 'sale'), ('user_id', '=', self.employee_id.user_id.id),('sale_commision_rel', '=', False)]
         return {'domain': {'sales_order_ids': dom}}
 
     @api.multi
@@ -165,14 +208,8 @@ class SaleCommission(models.Model):
         total = 0.0
         if 'sales_order_ids' in vals:
             for order in vals.get('sales_order_ids'):
-                partial_amount = 0.0
                 for sorder in order[2]:
-                    partial_amount += self.env['sale.order'].browse(sorder).amount_total
-                if 'employee_id' in vals:
-                    percent = self.env['hr.employee'].browse(vals.get('employee_id')).percent_commission
-                else:
-                    percent = self.employee_id.percent_commission
-                total += partial_amount * (percent / 100)
+                    total += self.clasifi_invoice_by_commision(self.env['sale.order'].browse(sorder))
             return total
         else:
             return self.amount_total
@@ -202,7 +239,10 @@ class Employee(models.Model):
     _inherit = 'hr.employee'
 
     is_salesman = fields.Boolean('Es vendedor', help='Marcar si el empleado es vendedor')
-    percent_commission = fields.Float(string='% de comisión')
+    percent_commission_vs = fields.Float(string='% Comisión ventas asignadas vía Sistema')
+    percent_commission_v2 = fields.Float(string='% Comisión a partir de la segunda Venta')
+    percent_commission_vce = fields.Float(string='% Comisión ventas a cliente existente')
+    percent_commission_vcn = fields.Float(string='% Comisión ventas a clientes nuevos')
 
 
 class AccountInvoice(models.Model):

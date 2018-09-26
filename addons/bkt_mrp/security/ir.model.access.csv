@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_mrpuser,sale_order_mrpuser,sale.model_sale_order,mrp.group_mrp_user,1,0,0,0
+access_sale_order_mrpmanager,sale_order_mrpmanager,sale.model_sale_order,mrp.group_mrp_manager,1,0,0,0
+access_sale_order_line_mrpuser,sale_order_line_mrpuser,sale.model_sale_order_line,mrp.group_mrp_user,1,0,0,0
+access_sale_order_line_mrpmanager,sale_order_line_mrpmanager,sale.model_sale_order_line,mrp.group_mrp_manager,1,0,0,0
+access_account_invoice_mrpuser,account_invoice_mrpuser,account.model_account_invoice,mrp.group_mrp_user,1,0,0,0
+access_account_invoice_mrpmanager,account_invoice_mrpmanager,account.model_account_invoice,mrp.group_mrp_manager,1,0,0,0
+access_stock_move_mrpuser,stock_move_mrpuser,stock.model_stock_move,mrp.group_mrp_user,1,0,0,0
+access_stock_move_mrpmanager,stock_move_mrpmanager,stock.model_stock_move,mrp.group_mrp_manager,1,0,0,0

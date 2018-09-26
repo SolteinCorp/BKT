@@ -35,6 +35,11 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
+    invoice_paid_all = fields.Boolean('facturas pagada ?', compute='_check_invoice_paid')
+    sale_commision_rel = fields.Boolean('commision')
+    date_promise_oportunity = fields.Date(string='Fecha promesa de la oportunidad', readonly=True)
+    code_oportunity = fields.Char('Código de la oportunidad', store=True, readonly=True, related='opportunity_id.code')
+
     date_promise = fields.Date(string='Fecha promesa',
                                states={'draft': [('invisible', True)],
                                        'sent': [('invisible', True)],
@@ -75,6 +80,18 @@ class SaleOrder(models.Model):
                                    track_visibility='always', states={'done': [('invisible', True)]})
 
     modify_sale = fields.Boolean(string='Enable Sales ?', compute='_set_access_for_sale')
+
+    @api.multi
+    def _check_invoice_paid(self):
+        for record in self:
+            result = 0
+            for inv in record.invoice_ids:
+                if inv.state == 'paid':
+                    result = result + 1
+            if result != 0 and result == len(record.invoice_ids):
+                record.invoice_paid_all=True
+            else:
+                record.invoice_paid_all = False
 
     @api.one
     def _set_access_for_sale(self):
@@ -164,7 +181,7 @@ class SaleOrder(models.Model):
                 oport = record.opportunity_id
                 stages = record.env['crm.stage'].search([])
                 for sta in stages:
-                    if sta.probability == 95:
+                    if sta.probability == 100:
                         oport.write({'stage_id': sta.id})
 
     @api.multi
@@ -197,7 +214,7 @@ class Partner(models.Model):
                                                         "Fill it if the company is subjected to taxes. "
                                                         "Used by the some of the legal statements.")
     _sql_constraints = [
-        ('vat_uniq', 'unique (vat)', "El campo RFC no debe repetirse !")
+        ('vat_uniq', 'unique (name)', "El campo RFC no debe repetirse !")
     ]
 
 

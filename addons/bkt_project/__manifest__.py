@@ -18,6 +18,7 @@ It assigns manager and user access rights to the Administrator for the accountin
     'data': [ 
             'views/project_otp_ext_views.xml',
             'report/project_report_template.xml',
+            'security/ir.model.access.csv'
             ],
     'demo': [],
     'test': [],

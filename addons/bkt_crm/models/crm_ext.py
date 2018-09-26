@@ -9,6 +9,8 @@ class CrmLead(models.Model):
 
     code = fields.Char('Código', index=True, readonly=True)
     sale_number = fields.Integer(compute='_compute_sale_amount_total', string="Número de cotizaciones")
+    date_promise = fields.Date(string='Fecha promesa')
+
 
     @api.depends('order_ids')
     def _compute_sale_amount_total(self):
