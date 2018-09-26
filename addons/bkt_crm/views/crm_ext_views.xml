@@ -12,6 +12,33 @@
                   </h2>
                   <br/>
                 </xpath>
+              <xpath expr="//field[@name='user_id']" position="after">
+                     <field name="date_promise"/>
+              </xpath>
+            </field>
+     </record>
+
+
+     <record id="sale_crm.sale_action_quotations_new" model="ir.actions.act_window">
+        <field name="context">{'search_default_opportunity_id': active_id, 'default_opportunity_id': active_id}</field>
+    </record>
+
+
+      <record id="view_crm_lead_ext_bkt_form" model="ir.ui.view">
+            <field name="name">crm.lead.ext.bkt.form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//button[1]" position="replace">
+                  <button string="Nueva cotización" name="%(sale_crm.sale_action_quotations_new)d" type="action" class="oe_highlight"
+                        context="{'search_default_partner_id': partner_id,
+                                  'default_partner_id': partner_id,
+                                  'default_team_id': team_id,
+                                  'default_campaign_id': campaign_id,
+                                  'default_medium_id': medium_id,
+                                  'default_date_promise_oportunity': date_promise,
+                                  'default_source_id': source_id}"/>
+                </xpath>
             </field>
      </record>
 

@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_projectuser,sale_order_projectuser,sale.model_sale_order,project.group_project_user,1,0,0,0
+access_sale_order_projectmanager,sale_order_projectmanager,sale.model_sale_order,project.group_project_manager,1,0,0,0
+access_sale_order_line_projectuser,sale_order_line_projectuser,sale.model_sale_order_line,project.group_project_user,1,0,0,0
+access_sale_order_line_projectmanager,sale_order_line_projectmanager,sale.model_sale_order_line,project.group_project_manager,1,0,0,0
+access_account_invoice_projectuser,account_invoice_projectuser,account.model_account_invoice,project.group_project_user,1,0,0,0
+access_account_invoice_projectmanager,account_invoice_projectmanager,account.model_account_invoice,project.group_project_manager,1,0,0,0
+access_stock_move_projectuser,stock_move_projectuser,stock.model_stock_move,project.group_project_user,1,0,0,0
+access_stock_move_projectmanager,stock_move_projectmanager,stock.model_stock_move,project.group_project_manager,1,0,0,0
+
