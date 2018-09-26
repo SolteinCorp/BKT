@@ -36,6 +36,7 @@ class SaleOrder(models.Model):
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
     invoice_paid_all = fields.Boolean('facturas pagada ?', compute='_check_invoice_paid')
+    oport_code = fields.Integer('generado codigo ?')
     sale_commision_rel = fields.Boolean('commision')
     date_promise_oportunity = fields.Date(string='Fecha promesa de la oportunidad', readonly=True)
     code_oportunity = fields.Char('Código de la oportunidad', store=True, readonly=True, related='opportunity_id.code')
@@ -202,6 +203,9 @@ class SaleOrder(models.Model):
                         raise UserError('El Usuario de Ventas solo puede especificar descuentos de hasta 5%.')
         return super(SaleOrder, self).write(vals)
 
+    @api.multi
+    def action_print_saleorder(self):
+        return self.env.ref('bkt_sales.sales_work_order_report').report_action(self)
 
 class Partner(models.Model):
     _inherit = 'res.partner'
