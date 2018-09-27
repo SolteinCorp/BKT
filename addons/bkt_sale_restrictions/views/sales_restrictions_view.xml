@@ -13,7 +13,7 @@
                             <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
                         </header>
                         <sheet>
-                            <div class="oe_button_box" name="button_box" invisible="1">
+                            <div class="oe_button_box" name="button_box" >
                                 <button name="action_view_invoice"
                                     type="object"
                                     class="oe_stat_button"
@@ -21,6 +21,39 @@
                                     attrs="{'invisible': [('invoice_count', '=', 0)]}">
                                     <field name="invoice_count" widget="statinfo" string="Facturas"/>
                                 </button>
+                                <button name="%(bkt_sales.action_project_list)d" type="action" class="oe_stat_button"
+                                    icon="fa-tasks"
+                                    attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}"
+                                    context="{'search_default_partner_id': partner_id,'default_partner_id': partner_id,'default_visibility':0}">
+                                    <field name="project_count" widget="statinfo" string="Proyectos"/>
+                                 </button>
+                                 <button name="%(bkt_sales.action_project_instalation_list)d" type="action" class="oe_stat_button"
+                                    icon="fa-tasks"
+                                    attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}"
+                                    context="{'search_default_partner_id': partner_id,'default_partner_id': partner_id}">
+                                    <field name="project_instalation_count" widget="statinfo" string="Proy. instal."/>
+                                </button>
+                                <button name="%(bkt_sales.action_mrp_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
+                                    attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
+                                    <field name="mrp_count" widget="statinfo" string="Producciones"/>
+                                 </button>
+                                 <button name="%(bkt_sales.action_otp_list)d" type="action" class="oe_stat_button"
+                                    context="{'search_default_sale_order_id': active_id,'default_sale_order_id': active_id,'default_is_transportation': 'true'}"
+                                    icon="fa-tasks"
+                                    attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
+                                <!-- groups="sales_team.group_sale_manager"-->
+                                     <field name="otp_count" widget="statinfo" string="Transportaciones"/>
+                                 </button>
+                                 <button name="%(bkt_sales.action_purchase_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
+                                    attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
+                                    <!--groups="sales_team.group_sale_manager"-->
+                                    <field name="purchase_count" widget="statinfo" string="Compras"/>
+                                 </button>
+          <!--                       <button name="action_view_delivery" type="object" class="oe_stat_button" icon="fa-truck"
+                                    &lt;!&ndash;attrs="{'invisible': [('delivery_count', '=', 0)]}" &ndash;&gt;
+                                    &lt;!&ndash;groups="base.group_user"&ndash;&gt;
+                                    &lt;!&ndash;<field name="delivery_count" widget="statinfo" string="Delivery"/>&ndash;&gt;
+                                 </button>-->
                             </div>
                             <div class="oe_title">
                                 <h1>

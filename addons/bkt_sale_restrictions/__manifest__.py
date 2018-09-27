@@ -12,7 +12,7 @@ Restricciones de Visibilidad para Ventas y CRM
 """,
     'website': '',
     'author': 'Soltein SA',
-    'depends': ['sale','stock','purchase','crm', 'project','mrp'],
+    'depends': ['sale', 'stock', 'purchase', 'crm', 'project', 'mrp', 'bkt_sales'],
     'data': [
         'views/sales_restrictions_view.xml',
         'views/opportunity_restrictions_view.xml',

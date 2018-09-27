@@ -14,15 +14,26 @@ It gives the Administrator user access to all accounting features such as journa
 It assigns manager and user access rights to the Administrator for the accounting application and only user rights to the Demo user.
 """,
     'website': 'https://www.odoo.com/page/crm',
-    'depends': ['crm','sale_management','sale','purchase','stock','mrp','account_invoicing','project','hr','website','bkt_purchase','bkt_project',
-                'bkt_otp','bkt_crm','bkt_account_invoice','bkt_sale_comision','bkt_sales'],
-    'data': [ 
-            # 'views/crm_ext_views.xml',
-     ],
+    'depends': ['crm', 'sale_management', 'sale', 'purchase', 'stock', 'mrp', 'account_invoicing', 'project', 'hr',
+                'website',
+                'bkt_purchase',
+                'bkt_project',
+                'bkt_otp',
+                'bkt_crm',
+                'bkt_account_invoice',
+                'bkt_sale_comision',
+                'bkt_sales',
+                'bkt_mrp',
+                'bkt_purchase_requisition',
+                'bkt_sale_restrictions',
+                'bkt_base_ext'],
+    'data': [
+        # 'views/crm_ext_views.xml',
+    ],
     'demo': [],
     'test': [],
     'installable': True,
     'auto_install': False,
     'application': True,
-    
+
 }
