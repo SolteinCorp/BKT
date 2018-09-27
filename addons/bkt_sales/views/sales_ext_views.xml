@@ -85,13 +85,19 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <data>
+                <xpath expr="//header/button[@name='print_quotation'][1]" position="replace"/>
+                <xpath expr="//header/button[@name='print_quotation']" position="replace"/>
+
+                <xpath expr="//button[7]" position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', 'in', ['draft','sent','holden','sale','done','cancel'])]}</attribute>
+                </xpath>
                 <xpath expr="//button[@id='action_confirm']" position="attributes">
                     <attribute name="attrs">{'invisible': [('state', 'not in', ['draft','sent','holden'])]}</attribute>
                     <attribute name="groups">sales_team.group_sale_manager</attribute>
                 </xpath>
                 <xpath expr="//button[@id='action_confirm']" position="after">
                     <button name="action_hold" type="object" string="Esperando Anticipo" states="sent"/>
-                    <button name="action_print_saleorder" type="object" string="Orden de trabajo" states="sale"
+                    <button name="action_print_saleorder" type="object" string="Imprimir Orden de trabajo" states="sale"
                     icon="fa-print" class="btn-primary"/>
                 </xpath>
                 <xpath expr="//header/button[@name='action_confirm'][2]" position="replace"/>
@@ -194,6 +200,7 @@
     <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
+
         <xpath expr="//field[@name='payment_term_id']" position="before">
             <field name="modify_sale" invisible="1"/>
         </xpath>

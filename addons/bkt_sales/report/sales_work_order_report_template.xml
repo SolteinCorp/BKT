@@ -4,260 +4,270 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
-                    <div class="page" style="height:50px">
-
-                        <div class="table">
-                            <div class="row ">
-                                <div class="col-xs-6; text-left" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">ORDEN DE TRABAJO</span>
+                    <div class="page">
+                        <table class="table-condensed">
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-6 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>ORDEN DE TRABAJO</b></span>
                                 </div>
-                                <div class="col-xs-3; text-right" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">Folio:</span>
+                                <div class="col-xs-3 text-right" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>Folio:</b></span>
                                 </div>
-                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
-
+                                <div class="col-xs-3">
+                                    <span >-</span>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='width:25%;background-color:#000000;'>
-                                    <h3 style="text-color:#FFFFFF;">NO. DE CONTIZACIÓN</h3>
+                        <br/>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <b style="color:#FFFFFF;">NO. DE COTIZACIÓN</b>
                                 </div>
-                                <div class="col-xs-9" style='width:75%;background-color:#FFFFFF;'>
+                                <div class="col-xs-9" style='background-color:#FFFFFF;'>
                                     <span t-field="o.name"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='width:25%;background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">FECHA</span>
+                        <br/>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>FECHA</b></span>
                                 </div>
-                                <div class="col-xs-3" style='width:25%;background-color:#FFFFFF;'>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
                                     <span t-field="o.confirmation_date"/>
                                 </div>
-                                <div class="col-xs-3" style='width:25%;background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">SOLICITA</span>
+                                <div class="col-xs-3" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>SOLICITA</b></span>
                                 </div>
-                                <div class="col-xs-3" style='width:25%;background-color:#FFFFFF;'>
+                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
                                     <span t-field="o.user_id.name"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">CLIENTE</span>
+                        <br/>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>CLIENTE</b></span>
                                 </div>
-                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                <div class="col-xs-3" style='border-color:#000000;'>
                                     <span t-field="o.contact_delivery_id.name"/>
                                 </div>
                                 <div class="col-xs-3" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">EMPRESA</span>
+                                    <span style="color:#FFFFFF;"><b>EMPRESA</b></span>
                                 </div>
-                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                <div class="col-xs-3" style='border-color:#000000;'>
                                     <span t-field="o.partner_id.name"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">REQUIERE ENVÍO</span>
+                        <br/>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>REQUIERE ENVÍO</b></span>
                                 </div>
                                 <div class="col-xs-3" style='background-color:#FFFFFF;'>
-
+                                        <span t-if="o.otp_count!=0" >SI</span>
+                                        <span t-if="o.otp_count==0" >NO</span>
                                 </div>
                                 <div class="col-xs-3" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">REQUIERE INSTALACIÓN</span>
+                                    <span style="color:#FFFFFF;"><b>REQUIERE INSTALACIÓN</b></span>
                                 </div>
                                 <div class="col-xs-3" style='background-color:#FFFFFF;'>
-
+                                             <span t-if="o.project_instalation_count!=0" >SI</span>
+                                        <span t-if="o.project_instalation_count==0" >NO</span>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">LUGAR DE ENVÍO</span>
+                            <br/>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>LUGAR DE ENVÍO</b></span>
                                 </div>
-                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                <div class="col-xs-3" style='border-color:#000000;'>
                                     <span t-field="o.home_delivery"/>
                                 </div>
                                 <div class="col-xs-3" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">CONTACTO DE ENTREGA</span>
+                                    <span style="color:#FFFFFF;"><b>CONTACTO DE ENTREGA</b></span>
                                 </div>
-                                <div class="col-xs-3" style='background-color:#FFFFFF;'>
+                                <div class="col-xs-3" style='border-color:#000000;'>
                                     <span t-field="o.contact_delivery_id.name"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">DOMICILIO DE ENTREGA</span>
+                            <br/>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>DOMICILIO DE ENTREGA</b></span>
                                 </div>
                                 <div class="col-xs-9" style='background-color:#FFFFFF;'>
-                                    <span t-field="o.partner_shipping_id.name"/>
+                                    <span t-field="o.partner_shipping_id.street"/> y <span t-field="o.partner_shipping_id.street2"/>,
+                                    <span t-field="o.partner_shipping_id.state_id.name"/> <span t-field="o.partner_shipping_id.country_id.name"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
+                            <br/>
+                            <div class="row" style="border:2px solid #000000;">
                                 <div class="col-xs-3" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">FECHA PROMESA</span>
+                                    <span style="color:#FFFFFF;"><b>FECHA PROMESA</b></span>
                                 </div>
-                                <div class="col-xs-9" style='background-color:#FFFFFF;'>
+                                <div class="col-xs-9">
                                     <span t-field="o.date_promise"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left" style='background-color:#000000;'>
-                                    <span style="text-color:#FFFFFF;">FECHA DE ENTREGA</span>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-3 text-left" style='background-color:#000000;'>
+                                    <span style="color:#FFFFFF;"><b>FECHA DE ENTREGA</b></span>
                                 </div>
-                                <div class="col-xs-9" style='background-color:#FFFFFF;'>
+                                <div class="col-xs-9" >
                                     <span t-field="o.confirmation_date"/>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="table">
-                            <div class="row" style="height:38px">
-                                <div class="col-xs-3; text-left">
-                                    <span style="text-color:#FFFFFF;">Productos</span>
+                        </table>
+                        <br/>
+                        <table class="table-bordered">
+                            <div class="row" style="border-bottom:2px solid #000000;">
+                                <div class="col-xs-12 text-left">
+                                    <b>Productos</b>
                                 </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <table class="table table-condensed table-bordered">
-                            <thead style='background-color:#000000;'>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Nombre</th>
-                                    <th>Modelo</th>
-                                    <th>Imagen</th>
-                                    <th>Cant.</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="o.order_line" t-as="line">
-                                    <td><span t-field="line.product_id.default_code"/></td>
-                                    <td><span t-field="line.product_id.name"/></td>
-                                    <td><span />model</td>
-                                    <td><span t-field="line.product_id.image_medium"/></td>
-                                    <td><span t-field="line.product_uom_qty"/></td>
-                                </tr>
-                            </tbody>
                         </table>
-                        <hr/>
-                        <div class="row" style="height:38px">
-                            <div class="col-xs-3; text-left">
-                                <span style="text-color:#FFFFFF;">Órdenes de Compra</span>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="height:38px">
-                            <div class="col-xs-2; text-left">
-                                <span >Folio</span>
-                            </div>
-                            <div class="col-xs-2; text-left">
-                                <span ></span>
-                            </div>
-                            <div class="col-xs-2; text-left">
-                                <span >Fecha de Entrega</span>
-                            </div>
 
-                            <div class="col-xs-2; text-left">
-                                <span ></span>
+                        <table class="table" style='border:2px solid #000000;'>
+                            <div class="row" style='background-color:#000000;border:2px solid #000000;'>
+                                <div class="col-xs-2">
+                                    <b style="color:#FFFFFF;">Código </b>
+                                </div>
+                                <div class="col-xs-3" >
+                                   <b style="color:#FFFFFF;">Nombre</b>
+                                </div>
+                                <div class="col-xs-3" >
+                                   <b style="color:#FFFFFF;">Modelo</b>
+                                </div>
+                                <div class="col-xs-2" >
+                                   <b style="color:#FFFFFF;">Imagen</b>
+                                </div>
+                                <div class="col-xs-2" >
+                                   <b style="color:#FFFFFF;">Cant.</b>
+                                </div>
                             </div>
-                            <div class="col-xs-2; text-left">
-                                <span >Status</span>
-                            </div>
+                            <div class="row" t-foreach="o.order_line" t-as="line" style="border:2px solid #000000;">
+                                <div class="col-xs-2" >
+                                   <span t-field="line.product_id.default_code"/>
+                                </div>
+                                <div class="col-xs-3" >
+                                   <span t-field="line.product_id.name"/>
+                                 </div>
+                                <div class="col-xs-3" >
+                                   <span t-field="line.product_id.name"/>
+                                 </div>
+                                <div class="col-xs-2 text-center" >
+                                   <span t-field="line.product_id.image_small" t-field-options="{'widget': 'image'}"/>
+                                 </div>
+                                <div class="col-xs-2" >
+                                   <span t-field="line.product_uom_qty"/>
+                                 </div>
 
-                            <div class="col-xs-2; text-left">
-                                <span ></span>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="height:38px">
-                            <div class="col-xs-3; text-left">
-                                <span style="text-color:#FFFFFF;">Órdenes de Producción</span>
+                        </table>
+                         <br/>
+                        <table class="table-condensed">
+                            <div class="row" style="border-bottom:2px solid #000000;">
+                                <div class="col-xs-12 text-left">
+                                    <span ><b>Órdenes de Compra</b></span>
+                                </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="height:38px">
-                            <div class="col-xs-3; text-left">
-                                <span >Folio</span>
+                        </table>
+                        <table class="table-condensed">
+                            <div class="row" t-foreach="o.purchase_ids" t-as="line">
+                                        <br/>
+                                        <div class="col-xs-2 text-left">
+                                            <b>Folio: </b>
+                                        </div>
+                                        <div class="col-xs-2 text-left" >
+                                            <span t-field="line.name"/>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <b>Fecha de Entrega: </b>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <span t-field="line.date_planned"/>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                           <b>Status: </b>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <span t-field="line.state"/>
+                                        </div>
                             </div>
-                            <div class="col-xs-3; text-left">
-                                <span ></span>
+                        </table>
+                        <br/>
+                        <table class="table-condensed">
+                            <div class="row" style="border-bottom:2px solid #000000;">
+                                <div class="col-sm-3 text-left">
+                                    <span ><b>Órdenes de Producción</b></span>
+                                </div>
                             </div>
-                            <div class="col-xs-3; text-left">
-                                <span >Status</span>
+                        </table>
+                        <br/>
+                        <table class="table-condensed">
+                            <div class="row" t-foreach="o.mrp_ids" t-as="line">
+                                        <br/>
+                                        <div class="col-xs-3 text-left">
+                                            <b>Folio: </b>
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <span t-field="line.name"/>
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                           <b>Status: </b>
+                                        </div>
+                                        <div class="col-xs-3 text-left">
+                                            <span t-field="line.state"/>
+                                        </div>
                             </div>
+                        </table>
+                        <br/>
+                        <table >
+                            <div class="row" style="border-bottom:2px solid #000000;">
+                                <div class="col-sm-3 text-left">
+                                    <b>Órdenes de Salida</b>
+                                </div>
+                            </div>
+                        </table>
+                        <br/>
+                        <table class="table-condensed">
+                            <div class="row" t-foreach="o.otp_order_ids" t-as="line">
+                                        <br/>
+                                        <div class="col-xs-2 text-left">
+                                            <b>Folio: </b>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <span t-field="line.name"/>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <b>Fecha de Entrega: </b>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <span t-field="line.scheduled_date"/>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                           <b>Status: </b>
+                                        </div>
+                                        <div class="col-xs-2 text-left">
+                                            <span t-field="line.state"/>
+                                        </div>
+                            </div>
+                        </table>
+                        <br/>
 
-                            <div class="col-xs-3; text-left">
-                                <span ></span>
+                        <table class="table-condensed">
+                            <div class="row" style='background-color:#000000;'>
+                                <div class="col-xs-12">
+                                    <b style="color:#FFFFFF;">ACUERDOS</b>
+                                </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="height:38px">
-                            <div class="col-xs-3; text-left">
-                                <span style="text-color:#FFFFFF;">Órdenes de Salida</span>
+                            <div class="row" style="border:2px solid #000000;">
+                                <div class="col-xs-12">
+                                    <span t-field="o.terms_delivery"/>
+                                </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="row" style="height:38px">
-                            <div class="col-xs-2; text-left">
-                                <span >Folio</span>
-                            </div>
-                            <div class="col-xs-2; text-left">
-                                <span ></span>
-                            </div>
-                            <div class="col-xs-2; text-left">
-                                <span >Fecha de Entrega</span>
-                            </div>
-
-                            <div class="col-xs-2; text-left">
-                                <span ></span>
-                            </div>
-                            <div class="col-xs-2; text-left">
-                                <span >Status</span>
-                            </div>
-
-                            <div class="col-xs-2; text-left">
-                                <span ></span>
-                            </div>
-                        </div>
-
-                        <hr/>
-                        <table class="table table-condensed table-bordered">
-                            <thead style='background-color:#000000;'>
-                                <tr>
-                                    <th>ACUERDOS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span t-field="o.terms_delivery"/></td>
-                                </tr>
-                            </tbody>
                         </table>
 
                     </div>
                 </t>
-                <div style="page-break-after:always;"/>
             </t>
         </t>
     </template>
@@ -266,7 +276,7 @@
         id="sales_work_order_report"
         name="bkt_sales.sales_work_order_report_template"
         model="sale.order"
-        report_type="qweb-html"
+        report_type="qweb-pdf"
         string="Orden de Trabajo"
         file="bkt_sales.sales_work_order_report_template"
         menu="False"
