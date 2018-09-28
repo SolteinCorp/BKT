@@ -127,7 +127,7 @@
                     <button name="action_hold" type="object" string="Esperando Anticipo" states="sent"/>
                     <button name="action_print_saleorder" type="object" string="Imprimir Orden de trabajo" states="sale"
                     icon="fa-print" class="btn-primary"/>
-                    <button name="action_print_offer" type="object" string="Imprimir Cotizaci&#243;n" states="draft,sent"/>
+                    <!--button name="action_print_offer" type="object" string="Imprimir Cotizaci&#243;n" states="draft,sent"/-->
                 </xpath>
                 <xpath expr="//header/button[@name='action_confirm'][2]" position="replace"/>
 
