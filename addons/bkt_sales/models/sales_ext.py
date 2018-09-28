@@ -207,6 +207,11 @@ class SaleOrder(models.Model):
     def action_print_saleorder(self):
         return self.env.ref('bkt_sales.sales_work_order_report').report_action(self)
 
+    @api.multi
+    def action_print_offer(self):
+        return self.env.ref('bkt_sales.sales_offer_report').report_action(self)
+
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
