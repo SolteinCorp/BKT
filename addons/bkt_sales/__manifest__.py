@@ -16,6 +16,7 @@
         'views/sales_ext_views.xml',
         'report/sales_report_template.xml',
         'report/sales_work_order_report_template.xml',
+        'report/sales_offer_report_template.xml',
         'security/ir.model.access.csv',
         'views/partner_ext_view.xml',
     ],
