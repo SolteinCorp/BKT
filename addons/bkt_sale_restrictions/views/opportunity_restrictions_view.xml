@@ -226,7 +226,7 @@
                 </field>
         </record>
 
-        <menuitem id="menu_cot_purchase_"
+<!--        <menuitem id="menu_cot_purchase_"
                     action="action_bkt_cots_view_opp"
                     name="COTs"
                     parent="purchase.menu_procurement_management"
@@ -251,6 +251,6 @@
                     name="COTs"
                     parent="stock.menu_stock_inventory_control"
                     sequence="2"
-                  groups="stock.group_stock_user,stock.group_stock_manager"/>
+                  groups="stock.group_stock_user,stock.group_stock_manager"/>-->
 
     </odoo>

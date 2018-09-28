@@ -12,9 +12,11 @@
                   </h2>
                   <br/>
                 </xpath>
-              <xpath expr="//field[@name='user_id']" position="after">
+                <xpath expr="//header/button[@name='action_set_won']" position="replace"/>
+
+                <xpath expr="//field[@name='user_id']" position="after">
                      <field name="date_promise"/>
-              </xpath>
+                 </xpath>
             </field>
      </record>
 

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models, api, _
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+
 
 
 class SaleOrder(models.Model):
@@ -39,21 +40,21 @@ class SaleOrder(models.Model):
     oport_code = fields.Integer('generado codigo ?')
     sale_commision_rel = fields.Boolean('commision')
     date_promise_oportunity = fields.Date(string='Fecha promesa de la oportunidad', readonly=True)
-    code_oportunity = fields.Char('Código de la oportunidad', store=True, readonly=True, related='opportunity_id.code')
+    code_oportunity = fields.Char('Cotización', store=True, readonly=True, related='opportunity_id.code')
 
     date_promise = fields.Date(string='Fecha promesa',
                                states={'draft': [('invisible', True)],
                                        'sent': [('invisible', True)],
                                        'holden': [('invisible', False)],
                                        'sale': [('invisible', False)],
-                                       'done': [('invisible', True)]})
+                                       'done': [('invisible', False)]})
 
     advance_amount = fields.Float(string='Monto de anticipo', default=0.00,
                                   states={'draft': [('invisible', True)],
                                           'sent': [('invisible', True)],
                                           'holden': [('invisible', False)],
                                           'sale': [('invisible', False)],
-                                          'done': [('invisible', True)]})
+                                          'done': [('invisible', False)]})
 
     contact_delivery_id = fields.Many2one('res.partner', string='Contacto de entrega', readonly=True,
                                           states={'draft': [('readonly', False)],
@@ -70,15 +71,14 @@ class SaleOrder(models.Model):
 
     order_line = fields.One2many('sale.order.line', 'order_id', string='Order Lines',
                                  states={'cancel': [('readonly', True)],
-                                         'done': [('readonly', True), ('invisible', False)]}, copy=True,
+                                         'done': [('readonly', True)]}, copy=True,
                                  auto_join=True)
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
-                                     track_visibility='onchange', states={'done': [('invisible', True)]})
+                                     track_visibility='onchange')
 
-    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
-                                 states={'done': [('invisible', True)]})
+    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all',
-                                   track_visibility='always', states={'done': [('invisible', True)]})
+                                   track_visibility='always')
 
     modify_sale = fields.Boolean(string='Enable Sales ?', compute='_set_access_for_sale')
 
@@ -207,16 +207,14 @@ class SaleOrder(models.Model):
     def action_print_saleorder(self):
         return self.env.ref('bkt_sales.sales_work_order_report').report_action(self)
 
-class Partner(models.Model):
-    _inherit = 'res.partner'
 
-    company_type = fields.Selection(string='Company Type',
-                                    selection=[('person', 'Persona física'), ('company', 'Persona moral')],
-                                    compute='_compute_company_type', inverse='_write_company_type')
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
 
     vat = fields.Char(string='TIN', required=True, help="Tax Identification Number. "
                                                         "Fill it if the company is subjected to taxes. "
                                                         "Used by the some of the legal statements.")
+
     _sql_constraints = [
         ('vat_uniq', 'unique (name)', "El campo RFC no debe repetirse !")
     ]

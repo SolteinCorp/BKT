@@ -1,252 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
     <odoo>
 
-    <!--[TBKT-20] Ventas Restringidas-->
+        <!--[TBKT-20] Ventas Restringidas-->
 
-        <record id="bkt_sale_odt_form_view" model="ir.ui.view">
-            <field name="name">bkt.sale.order.form.odt</field>
-            <field name="model">sale.order</field>
-            <field name="priority">100</field>
-            <field name="arch" type="xml">
-                <form string="Orden de Ventas" class="o_sale_order" edit="false" create="false">
-                        <header>
-                            <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
-                        </header>
-                        <sheet>
-                            <div class="oe_button_box" name="button_box" invisible="1">
-                                <button name="action_view_invoice"
-                                    type="object"
-                                    class="oe_stat_button"
-                                    icon="fa-pencil-square-o"
-                                    attrs="{'invisible': [('invoice_count', '=', 0)]}">
-                                    <field name="invoice_count" widget="statinfo" string="Facturas"/>
-                                </button>
-                            </div>
-                            <div class="oe_title">
-                                <h1>
-                                    <field name="name" readonly="1"/>
-                                </h1>
-                            </div>
-                            <group>
-                                <group>
-                                    <field name="partner_id" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
-                                    <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}" options='{"always_reload": True}'/>
-                                    <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}" options='{"always_reload": True}'/>
-                                </group>
-                                <group>
-                                    <field name="validity_date" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
-                                    <field name="confirmation_date" attrs="{'invisible': [('state', 'in', ['draft', 'sent', 'cancel'])]}"/>
-                                    <field name="pricelist_id" groups="product.group_sale_pricelist" invisible="1"/>
-                                    <field name="currency_id" invisible="1"/>
-                                    <field name="payment_term_id" options="{'no_create': True}"/>
-                                </group>
-                            </group>
-                            <notebook>
-                                <page string="L&#237;neas del pedido">
-                                    <field name="order_line" mode="tree,kanban"
-                                        attrs="{'readonly': [('state', 'in', ('done','cancel'))]}">
-                                        <form string="L&#237;neas del pedido">
-                                            <group>
-                                                <group>
-                                                    <field name="product_updatable" invisible="1"/>
-                                                    <field name="product_id"
-                                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
-                                                        attrs="{'readonly': [('product_updatable', '=', False)]}"
-                                                        force_save="1"
-                                                       />
-                                                    <field name="layout_category_id" groups="sale.group_sale_layout"/>
-                                                    <field name="invoice_status" invisible="0"/>
-                                                    <field name="qty_to_invoice" invisible="1"/>
-                                                    <field name="qty_delivered_updateable" invisible="1"/>
-                                                    <label for="product_uom_qty" string="Cantidad Ordenada"/>
-                                                    <div>
-                                                        <field
-                                                            context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'uom_qty_change':True, 'company_id': parent.company_id}"
-                                                            name="product_uom_qty" class="oe_inline"/>
-                                                        <field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button"
-                                                            attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}"/>
-                                                    </div>
-                                                    <label for="qty_delivered" string="Cantidad Entregada" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
-                                                    <div attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}">
-                                                        <field name="qty_delivered" attrs="{'readonly': [('qty_delivered_updateable', '=', False)]}"/>
-                                                    </div>
-                                                    <div >
-                                                        <field name="qty_invoiced" invisible="1"/>
-                                                    </div>
-                                                </group>
-                                            </group>
-                                            <field name="state" invisible="1"/>
-                                        </form>
-                                        <tree string="L&#237;neas del pedido" editable="false" decoration-info="invoice_status=='to invoice'">
-                                            <field name="sequence" widget="handle"/>
-                                            <field name="product_updatable" invisible="1"/>
-                                            <field name="product_id"
-                                                attrs="{'readonly': [('product_updatable', '=', False)]}"
-                                                force_save="1"
-                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
-                                               />
-                                            <field name="layout_category_id" groups="sale.group_sale_layout"/>
-                                            <field name="name"/>
-                                            <field name="product_uom_qty"
-                                                string="Cantidad Ordenada"
-                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
-                                            />
-                                            <field name="qty_delivered"
-                                                attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}"/>
-                                            <field name="qty_invoiced"
-                                                attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" invisible="1"/>
-                                            <field name="qty_to_invoice" invisible="1"/>
-                                            <field name="product_uom"
-                                                attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}"
-                                                context="{'company_id': parent.company_id}"
-                                                groups="product.group_uom" options='{"no_open": True}'/>
-
-                                            <field name="qty_delivered_updateable" invisible="1"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="invoice_status" invisible="1"/>
-                                            <field name="customer_lead" invisible="1"/>
-                                            <field name="currency_id" invisible="1"/>
-                                        </tree>
-
-                                    </field>
-
-                                    <field name="note" class="oe_inline" placeholder="Configure T&#233;rminos y Condiciones en la Configuraci&#243; de Ventas..."/>
-                                    <div class="oe_clear"/>
-                                </page>
-                                <page string="Otra Info">
-                                    <group>
-                                        <group string="Informaci&#243;n de la venta" name="sales_person">
-                                            <field name="user_id"/>
-                                            <field name="team_id" options="{'no_create': True}"/>
-                                            <field name="client_order_ref"/>
-                                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
-                                            <field name="analytic_account_id" context="{'default_partner_id':partner_invoice_id, 'default_name':name}" attrs="{'readonly': ['|',('analytic_account_id','!=',False),('invoice_count','!=',0),('state','=','sale')]}" groups="analytic.group_analytic_accounting"/>
-                                        </group>
-                                        <group name="sale_pay" string="Facturaci&#243;n">
-                                            <field name="date_order" attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}"/>
-                                            <field name="fiscal_position_id" options="{'no_create': True}"/>
-                                            <field name="invoice_status" states="sale,done" invisible="1"/>
-                                        </group>
-                                    </group>
-                                </page>
-                            </notebook>
-                        </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="odt_view_sales_order_filter" model="ir.ui.view">
-                <field name="name">sale.order.list.select.odt</field>
-                <field name="model">sale.order</field>
-                <field name="arch" type="xml">
-                    <search string="Buscar ODTs">
-                        <field name="name" string="Pedidos" filter_domain="['|','|',('name','ilike',self),('client_order_ref','ilike',self),('partner_id','child_of',self)]"/>
-                        <field name="user_id"/>
-                        <field name="product_id"/>
-                        <filter string="Mis Pedidos" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
-                        <separator/>
-                        <group expand="0" string="Agrupar por">
-                            <filter string="Vendedor" domain="[]" context="{'group_by':'user_id'}"/>
-                            <filter name="customer" string="Cliente" domain="[]" context="{'group_by':'partner_id'}"/>
-                            <filter string="Mes del pedido" domain="[]" context="{'group_by':'date_order'}"/>
-                        </group>
-                   </search>
-                </field>
-            </record>
-
-        <record id="odt_view_sales_order_tree" model="ir.ui.view">
-                <field name="name">sale.order.tree.odt</field>
+            <record id="bkt_sale_odt_form_view" model="ir.ui.view">
+                <field name="name">bkt.sale.order.form.odt</field>
                 <field name="model">sale.order</field>
                 <field name="priority">100</field>
                 <field name="arch" type="xml">
-                    <tree string="Listado ODTs" class="o_sale_order" create="false" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'">
-                        <field name="message_needaction" invisible="1"/>
-                        <field name="name" string="Nro Pedido"/>
-                        <field name="date_order" string="Fecha de pedido"/>
-                        <field name="partner_id"/>
-                        <field name="user_id"/>
-                        <field name="currency_id" invisible="1"/>
-                        <field name="state"/>
-                    </tree>
-                </field>
-            </record>
-
-        <record id="view_odt_kanban" model="ir.ui.view" >
-                <field name="name">sale.order.kanban.odt</field>
-                <field name="model">sale.order</field>
-                <field name="priority">100</field>
-                <field name="arch" type="xml">
-                    <kanban class="o_kanban_mobile">
-                        <field name="name"/>
-                        <field name="partner_id"/>
-                        <field name="date_order"/>
-                        <field name="state"/>
-                        <field name="currency_id"/>
-                        <templates>
-                            <t t-name="kanban-box">
-                                <div t-attf-class="oe_kanban_card oe_kanban_global_click">
-                                    <div class="o_kanban_record_top mb16">
-                                        <div class="o_kanban_record_headings mt4">
-                                            <strong class="o_kanban_record_title"><span><t t-esc="record.partner_id.value"/></span></strong>
-                                        </div>
-                                    </div>
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_left text-muted">
-                                            <span><t t-esc="record.name.value"/> <t t-esc="record.date_order.value"/></span>
-                                        </div>
-                                        <div class="oe_kanban_bottom_right">
-                                            <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'cancel': 'default', 'done': 'success'}}"/>
-                                        </div>
-                                    </div>
+                    <form string="Orden de Ventas" class="o_sale_order" edit="false" create="false">
+                            <header>
+                                <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
+                            </header>
+                            <sheet>
+                                <div class="oe_button_box" name="button_box" >
+                                    <button name="action_view_invoice"
+                                        type="object"
+                                        class="oe_stat_button"
+                                        icon="fa-pencil-square-o"
+                                        attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                                        <field name="invoice_count" widget="statinfo" string="Facturas"/>
+                                    </button>
+                                    <button name="%(bkt_sales.action_project_list)d" type="action" class="oe_stat_button"
+                                        icon="fa-tasks"
+                                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}"
+                                        context="{'search_default_partner_id': partner_id,'default_partner_id': partner_id,'default_visibility':0}">
+                                        <field name="project_count" widget="statinfo" string="Proyectos"/>
+                                     </button>
+                                     <button name="%(bkt_sales.action_project_instalation_list)d" type="action" class="oe_stat_button"
+                                        icon="fa-tasks"
+                                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}"
+                                        context="{'search_default_partner_id': partner_id,'default_partner_id': partner_id}">
+                                        <field name="project_instalation_count" widget="statinfo" string="Proy. instal."/>
+                                    </button>
+                                    <button name="%(bkt_sales.action_mrp_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
+                                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
+                                        <field name="mrp_count" widget="statinfo" string="Producciones"/>
+                                     </button>
+                                     <button name="%(bkt_sales.action_otp_list)d" type="action" class="oe_stat_button"
+                                        context="{'search_default_sale_order_id': active_id,'default_sale_order_id': active_id,'default_is_transportation': 'true'}"
+                                        icon="fa-tasks"
+                                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
+                                    <!-- groups="sales_team.group_sale_manager"-->
+                                         <field name="otp_count" widget="statinfo" string="Transportaciones"/>
+                                     </button>
+                                     <button name="%(bkt_sales.action_purchase_list)d" type="action" class="oe_stat_button" icon="fa-tasks"
+                                        attrs="{'invisible': [('state', 'in', ['draft','sent','holden'])]}">
+                                        <!--groups="sales_team.group_sale_manager"-->
+                                        <field name="purchase_count" widget="statinfo" string="Compras"/>
+                                     </button>
+              <!--                       <button name="action_view_delivery" type="object" class="oe_stat_button" icon="fa-truck"
+                                        &lt;!&ndash;attrs="{'invisible': [('delivery_count', '=', 0)]}" &ndash;&gt;
+                                        &lt;!&ndash;groups="base.group_user"&ndash;&gt;
+                                        &lt;!&ndash;<field name="delivery_count" widget="statinfo" string="Delivery"/>&ndash;&gt;
+                                     </button>-->
                                 </div>
-                            </t>
-                        </templates>
-                    </kanban>
+                                <div class="oe_title">
+                                    <h1>
+                                        <field name="name" readonly="1"/>
+                                    </h1>
+                                </div>
+                                <group>
+                                    <group>
+                                        <field name="partner_id" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
+                                        <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}" options='{"always_reload": True}'/>
+                                        <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}" options='{"always_reload": True}'/>
+                                    </group>
+                                    <group>
+                                        <field name="validity_date" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
+                                        <field name="confirmation_date" attrs="{'invisible': [('state', 'in', ['draft', 'sent', 'cancel'])]}"/>
+                                        <field name="pricelist_id" groups="product.group_sale_pricelist" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="payment_term_id" options="{'no_create': True}"/>
+                                    </group>
+                                </group>
+                                <notebook>
+                                    <page string="L&#237;neas del pedido">
+                                        <field name="order_line" mode="tree,kanban"
+                                            attrs="{'readonly': [('state', 'in', ('done','cancel'))]}">
+                                            <form string="L&#237;neas del pedido">
+                                                <group>
+                                                    <group>
+                                                        <field name="product_updatable" invisible="1"/>
+                                                        <field name="product_id"
+                                                            context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                            attrs="{'readonly': [('product_updatable', '=', False)]}"
+                                                            force_save="1"
+                                                           />
+                                                        <field name="layout_category_id" groups="sale.group_sale_layout"/>
+                                                        <field name="invoice_status" invisible="0"/>
+                                                        <field name="qty_to_invoice" invisible="1"/>
+                                                        <field name="qty_delivered_updateable" invisible="1"/>
+                                                        <label for="product_uom_qty" string="Cantidad Ordenada"/>
+                                                        <div>
+                                                            <field
+                                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'uom_qty_change':True, 'company_id': parent.company_id}"
+                                                                name="product_uom_qty" class="oe_inline"/>
+                                                            <field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button"
+                                                                attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}"/>
+                                                        </div>
+                                                        <label for="qty_delivered" string="Cantidad Entregada" attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}"/>
+                                                        <div attrs="{'invisible': [('parent.state', 'not in', ['sale', 'done'])]}">
+                                                            <field name="qty_delivered" attrs="{'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                                                        </div>
+                                                        <div >
+                                                            <field name="qty_invoiced" invisible="1"/>
+                                                        </div>
+                                                    </group>
+                                                </group>
+                                                <field name="state" invisible="1"/>
+                                            </form>
+                                            <tree string="L&#237;neas del pedido" editable="false" decoration-info="invoice_status=='to invoice'">
+                                                <field name="sequence" widget="handle"/>
+                                                <field name="product_updatable" invisible="1"/>
+                                                <field name="product_id"
+                                                    attrs="{'readonly': [('product_updatable', '=', False)]}"
+                                                    force_save="1"
+                                                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                   />
+                                                <field name="layout_category_id" groups="sale.group_sale_layout"/>
+                                                <field name="name"/>
+                                                <field name="product_uom_qty"
+                                                    string="Cantidad Ordenada"
+                                                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                />
+                                                <field name="qty_delivered"
+                                                    attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])], 'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                                                <field name="qty_invoiced"
+                                                    attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" invisible="1"/>
+                                                <field name="qty_to_invoice" invisible="1"/>
+                                                <field name="product_uom"
+                                                    attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}"
+                                                    context="{'company_id': parent.company_id}"
+                                                    groups="product.group_uom" options='{"no_open": True}'/>
+
+                                                <field name="qty_delivered_updateable" invisible="1"/>
+                                                <field name="state" invisible="1"/>
+                                                <field name="invoice_status" invisible="1"/>
+                                                <field name="customer_lead" invisible="1"/>
+                                                <field name="currency_id" invisible="1"/>
+                                            </tree>
+
+                                        </field>
+
+                                        <field name="note" class="oe_inline" placeholder="Configure T&#233;rminos y Condiciones en la Configuraci&#243; de Ventas..."/>
+                                        <div class="oe_clear"/>
+                                    </page>
+                                    <page string="Otra Info">
+                                        <group>
+                                            <group string="Informaci&#243;n de la venta" name="sales_person">
+                                                <field name="user_id"/>
+                                                <field name="team_id" options="{'no_create': True}"/>
+                                                <field name="client_order_ref"/>
+                                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                                                <field name="analytic_account_id" context="{'default_partner_id':partner_invoice_id, 'default_name':name}" attrs="{'readonly': ['|',('analytic_account_id','!=',False),('invoice_count','!=',0),('state','=','sale')]}" groups="analytic.group_analytic_accounting"/>
+                                            </group>
+                                            <group name="sale_pay" string="Facturaci&#243;n">
+                                                <field name="date_order" attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}"/>
+                                                <field name="fiscal_position_id" options="{'no_create': True}"/>
+                                                <field name="invoice_status" states="sale,done" invisible="1"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                    </form>
                 </field>
             </record>
 
-        <record id="action_odt_form_view" model="ir.actions.act_window">
-            <field name="name">ODTs</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sale.order</field>
-            <field name="view_type">form</field>
-            <field name="view_ids" eval="[(5, 0, 0),
-                    (0, 0, {'view_mode': 'tree', 'view_id': ref('odt_view_sales_order_tree')}),
-                    (0, 0, {'view_mode': 'form', 'view_id': ref('bkt_sale_odt_form_view')}),
-                    (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_odt_kanban')})]"/>
-            <field name="view_mode">tree,kanban,form</field>
-            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
-              <field name="help" type="html">
-                  <p class="oe_view_nocontent_create">
-                    No se han generado pedidos de venta.
-                  </p>
-                </field>
-        </record>
+            <record id="odt_view_sales_order_filter" model="ir.ui.view">
+                    <field name="name">sale.order.list.select.odt</field>
+                    <field name="model">sale.order</field>
+                    <field name="arch" type="xml">
+                        <search string="Buscar ODTs">
+                            <field name="name" string="Pedidos" filter_domain="['|','|',('name','ilike',self),('client_order_ref','ilike',self),('partner_id','child_of',self)]"/>
+                            <field name="user_id"/>
+                            <field name="product_id"/>
+                            <filter string="Mis Pedidos" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
+                            <separator/>
+                            <group expand="0" string="Agrupar por">
+                                <filter string="Vendedor" domain="[]" context="{'group_by':'user_id'}"/>
+                                <filter name="customer" string="Cliente" domain="[]" context="{'group_by':'partner_id'}"/>
+                                <filter string="Mes del pedido" domain="[]" context="{'group_by':'date_order'}"/>
+                            </group>
+                       </search>
+                    </field>
+                </record>
 
-        <menuitem id="menu_odt_purchase_form_view"
-                    action="action_odt_form_view"
-                    name="ODTs"
-                    parent="purchase.menu_procurement_management"
-                    sequence="2" groups="purchase.group_purchase_user,purchase.group_purchase_manager"/>
+            <record id="odt_view_sales_order_tree" model="ir.ui.view">
+                    <field name="name">sale.order.tree.odt</field>
+                    <field name="model">sale.order</field>
+                    <field name="priority">100</field>
+                    <field name="arch" type="xml">
+                        <tree string="Listado ODTs" class="o_sale_order" create="false" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'">
+                            <field name="message_needaction" invisible="1"/>
+                            <field name="name" string="Nro Pedido"/>
+                            <field name="date_order" string="Fecha de pedido"/>
+                            <field name="partner_id"/>
+                            <field name="user_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="state"/>
+                        </tree>
+                    </field>
+                </record>
 
-        <menuitem id="menu_odt_project_form_view"
-                    action="action_odt_form_view"
-                    name="ODTs"
-                    parent="project.menu_project_management"
-                    sequence="2"
-                  groups="project.group_project_user,project.group_project_manager,project.group_time_work_estimation_tasks"/>
+            <record id="view_odt_kanban" model="ir.ui.view" >
+                    <field name="name">sale.order.kanban.odt</field>
+                    <field name="model">sale.order</field>
+                    <field name="priority">100</field>
+                    <field name="arch" type="xml">
+                        <kanban class="o_kanban_mobile">
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                            <field name="state"/>
+                            <field name="currency_id"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                        <div class="o_kanban_record_top mb16">
+                                            <div class="o_kanban_record_headings mt4">
+                                                <strong class="o_kanban_record_title"><span><t t-esc="record.partner_id.value"/></span></strong>
+                                            </div>
+                                        </div>
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left text-muted">
+                                                <span><t t-esc="record.name.value"/> <t t-esc="record.date_order.value"/></span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'cancel': 'default', 'done': 'success'}}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </record>
 
-         <menuitem id="menu_odt_mrp_form_view"
-                    action="action_odt_form_view"
-                    name="ODTs"
-                    parent="mrp.menu_mrp_bom"
-                    sequence="2"
-                  groups="mrp.group_mrp_user,mrp.group_mrp_manager,mrp.group_mrp_routings"/>
+            <record id="action_odt_form_view" model="ir.actions.act_window">
+                <field name="name">ODTs</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">sale.order</field>
+                <field name="view_type">form</field>
+                <field name="view_ids" eval="[(5, 0, 0),
+                        (0, 0, {'view_mode': 'tree', 'view_id': ref('odt_view_sales_order_tree')}),
+                        (0, 0, {'view_mode': 'form', 'view_id': ref('bkt_sale_odt_form_view')}),
+                        (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_odt_kanban')})]"/>
+                <field name="view_mode">tree,kanban,form</field>
+                <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+                  <field name="help" type="html">
+                      <p class="oe_view_nocontent_create">
+                        No se han generado pedidos de venta.
+                      </p>
+                    </field>
+            </record>
 
-        <menuitem id="menu_odt_stock_form_view"
-                    action="action_odt_form_view"
-                    name="ODTs"
-                    parent="stock.menu_stock_inventory_control"
-                    sequence="2"
-                  groups="stock.group_stock_user,stock.group_stock_manager"/>
+            <menuitem id="menu_odt_purchase_form_view"
+                        action="action_odt_form_view"
+                        name="ODTs"
+                        parent="purchase.menu_procurement_management"
+                        sequence="2" groups="purchase.group_purchase_user,purchase.group_purchase_manager"/>
+
+            <menuitem id="menu_odt_project_form_view"
+                        action="action_odt_form_view"
+                        name="ODTs"
+                        parent="project.menu_project_management"
+                        sequence="2"
+                      groups="project.group_project_user,project.group_project_manager,project.group_time_work_estimation_tasks"/>
+
+             <menuitem id="menu_odt_mrp_form_view"
+                        action="action_odt_form_view"
+                        name="ODTs"
+                        parent="mrp.menu_mrp_bom"
+                        sequence="2"
+                      groups="mrp.group_mrp_user,mrp.group_mrp_manager,mrp.group_mrp_routings"/>
+
+            <menuitem id="menu_odt_stock_form_view"
+                        action="action_odt_form_view"
+                        name="ODTs"
+                        parent="stock.menu_stock_inventory_control"
+                        sequence="2"
+                      groups="stock.group_stock_user,stock.group_stock_manager"/>
+
+        <!-- Nuevo Menu General para el rol Ventas/restringido -->
+
+            <menuitem id="sale_menu_restringido_root"
+                name="ODTs"
+                web_icon="sale,static/description/icon.png"
+                sequence="7" groups="bkt_sales.group_sale_restringido"/>
+
+            <menuitem id="sale_menu_odts"
+                name="ODTs"
+                parent="sale_menu_restringido_root"
+                sequence="1" groups="bkt_sales.group_sale_restringido"/>
+
+            <menuitem id="sale_menu_odts_acc"
+                parent="sale_menu_odts"
+                action="action_odt_form_view"
+                sequence="1" groups="bkt_sales.group_sale_restringido"/>
+
+
 </odoo>
